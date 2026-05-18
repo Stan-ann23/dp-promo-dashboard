@@ -6,931 +6,753 @@
   <title>DashPass Promo Spend Summary</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-    }
-    .header {
-      background: linear-gradient(135deg, #622EEA 0%, #341485 100%);
-      padding: 24px 32px;
-    }
-    .header-label {
-      color: white;
-      opacity: 0.8;
-      font-size: 12px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-    .header-title {
-      color: white;
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    .header-subtitle {
-      color: white;
-      opacity: 0.7;
-      font-size: 14px;
-    }
-    .tabs {
-      background: #f8f9fa;
-      border-bottom: 1px solid #e0e0e0;
-      padding: 0 32px;
-      display: flex;
-    }
-    .tab {
-      padding: 16px 24px;
-      background: transparent;
-      border: none;
-      border-bottom: 3px solid transparent;
-      cursor: pointer;
-      font-size: 14px;
-      color: #666;
-    }
-    .tab.active {
-      background: white;
-      border-bottom-color: #622EEA;
-      font-weight: bold;
-      color: #622EEA;
-    }
-    .tab:hover {
-      color: #622EEA;
-    }
-    .glance {
-      background: #f8f9fa;
-      padding: 24px 32px;
-    }
-    .glance-title {
-      color: #341485;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 16px;
-    }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .stat-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .stat-label {
-      color: #666;
-      font-size: 12px;
-      margin-bottom: 4px;
-    }
-    .stat-value {
-      font-size: 24px;
-      font-weight: bold;
-      color: #341485;
-    }
-    .stat-value.negative { color: #9069F2; }
-    .stat-value.positive { color: #4318AD; }
-    .stat-note {
-      color: #666;
-      font-size: 12px;
-      margin-top: 4px;
-    }
-    .content {
-      padding: 24px 32px;
-    }
-    .card {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      margin-bottom: 24px;
-    }
-    .card-header {
-      padding: 16px 20px;
-      border-bottom: 1px solid #e0e0e0;
-      font-weight: bold;
-      color: #341485;
-    }
-    .card-body {
-      padding: 20px;
-    }
-    .filters {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-    .filter-label {
-      color: #666;
-      font-size: 14px;
-    }
-    .filter-btn {
-      padding: 8px 16px;
-      background: white;
-      color: #333;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 13px;
-    }
-    .filter-btn.active {
-      background: #622EEA;
-      color: white;
-      border-color: #622EEA;
-    }
-    .type-btn {
-      padding: 4px 12px;
-      background: white;
-      color: #666;
-      border: 1px solid #e0e0e0;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 12px;
-    }
-    .type-btn.active {
-      background: #622EEA;
-      color: white;
-      border-color: #622EEA;
-    }
-    .type-btn:hover {
-      border-color: #622EEA;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    th {
-      background: #f8f9fa;
-      font-weight: bold;
-      font-size: 13px;
-    }
-    tr:nth-child(even) {
-      background: #fafafa;
-    }
-    .text-right { text-align: right; }
-    .text-center { text-align: center; }
-    .badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: bold;
-    }
-    /* DashPass Purple Scale */
-    .badge-t1 { background: #EFE8FF; color: #4318AD; }
-    .badge-t2 { background: #D5C4FF; color: #5221CF; }
-    .badge-new { background: #F8F5FF; color: #622EEA; }
-    .badge-nv { background: #B89EFB; color: #341485; }
-    .badge-5y { background: #FFE8E8; color: #c0392b; }
-    .badge-oos { background: #f0f0f0; color: #7f8c8d; }
-    .badge-none { background: #f5f5f5; color: #95a5a6; }
-    .text-good { color: #4318AD; }
-    .text-bad { color: #9069F2; }
-    .legend {
-      display: flex;
-      gap: 16px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-    }
-    .legend-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-    .insights-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-    }
-    .insight-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .insight-header {
-      padding: 12px 16px;
-      font-weight: bold;
-      border-bottom: 1px solid #e0e0e0;
-    }
-    .insight-header.good { color: #4318AD; background: #EFE8FF; }
-    .insight-header.bad { color: #622EEA; background: #F8F5FF; }
-    .insight-body {
-      padding: 16px;
-    }
-    .insight-body p {
-      margin-bottom: 8px;
-    }
-    .variance-card {
-      padding: 20px;
-      border-radius: 8px;
-      border: 1px solid;
-    }
-    .variance-card.warning {
-      background: #fff3e0;
-      border-color: #ffcc80;
-    }
-    .variance-card.success {
-      background: #e8f5e9;
-      border-color: #a5d6a7;
-    }
-    .variance-card.info {
-      background: #e3f2fd;
-      border-color: #90caf9;
-    }
-    .variance-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .chart-container {
-      position: relative;
-      height: 300px;
-      margin-bottom: 16px;
-    }
-    .footer {
-      background: #f8f9fa;
-      padding: 16px 32px;
-      border-top: 1px solid #e0e0e0;
-      color: #666;
-      font-size: 12px;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Calibri, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
+    .header { background: linear-gradient(135deg, #622EEA 0%, #341485 100%); padding: 24px 32px; }
+    .header-label { color: white; opacity: 0.8; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+    .header-title { color: white; font-size: 28px; font-weight: bold; margin-bottom: 8px; }
+    .header-subtitle { color: white; opacity: 0.7; font-size: 14px; }
+    .tabs { background: #f8f9fa; border-bottom: 1px solid #e0e0e0; padding: 0 32px; display: flex; }
+    .tab { padding: 16px 24px; background: transparent; border: none; border-bottom: 3px solid transparent; cursor: pointer; font-size: 14px; color: #666; }
+    .tab.active { background: white; border-bottom-color: #622EEA; font-weight: bold; color: #622EEA; }
+    .tab:hover { color: #622EEA; }
+    .glance { background: #f8f9fa; padding: 24px 32px; }
+    .glance-title { color: #341485; font-size: 18px; font-weight: bold; margin-bottom: 16px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .stat-label { color: #666; font-size: 12px; margin-bottom: 4px; }
+    .stat-value { font-size: 24px; font-weight: bold; color: #341485; }
+    .stat-value.negative { color: #e74c3c; }
+    .stat-value.positive { color: #27ae60; }
+    .stat-note { color: #666; font-size: 12px; margin-top: 4px; }
+    .content { padding: 24px 32px; }
+    .year-filter { display: flex; gap: 8px; align-items: center; margin-bottom: 24px; }
+    .year-filter label { color: #666; font-size: 14px; }
+    .year-btn { padding: 8px 16px; background: white; color: #333; border: 1px solid #e0e0e0; border-radius: 4px; cursor: pointer; font-size: 13px; }
+    .year-btn.active { background: #622EEA; color: white; border-color: #622EEA; }
+    .type-btn { padding: 6px 12px; background: white; color: #333; border: 1px solid #e0e0e0; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    .type-btn.active { background: #622EEA; color: white; border-color: #622EEA; }
+    .card { background: white; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .card-header { padding: 16px 20px; border-bottom: 1px solid #e0e0e0; }
+    .card-header h3 { color: #341485; font-size: 16px; font-weight: bold; }
+    .card-body { padding: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .pod-card { padding: 16px; border-radius: 8px; border-left: 4px solid; }
+    .pod-card.adoption { background: #4318AD15; border-color: #4318AD; }
+    .pod-card.retention { background: #5221CF15; border-color: #5221CF; }
+    .pod-card.benefits { background: #9069F215; border-color: #9069F2; }
+    .pod-card.partnerships { background: #B89EFB15; border-color: #B89EFB; }
+    .pod-label { color: #666; font-size: 12px; }
+    .pod-value { font-size: 18px; font-weight: bold; margin: 4px 0; }
+    .pod-value.adoption { color: #4318AD; }
+    .pod-value.retention { color: #5221CF; }
+    .pod-value.benefits { color: #9069F2; }
+    .pod-value.partnerships { color: #B89EFB; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f8f9fa; padding: 12px 16px; text-align: left; font-weight: bold; border-bottom: 2px solid #e0e0e0; font-size: 13px; }
+    td { padding: 12px 16px; border-bottom: 1px solid #e0e0e0; font-size: 13px; }
+    tr:nth-child(even) { background: #fafafa; }
+    tr.total { background: #f0f0f0; font-weight: bold; }
+    .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+    .badge-core { background: #4318AD20; color: #4318AD; }
+    .badge-nv { background: #27ae6020; color: #27ae60; }
+    .badge-other { background: #bdc3c720; color: #7f8c8d; }
+    .stacked-bar { display: flex; height: 24px; border-radius: 4px; overflow: hidden; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .insight-card { padding: 16px; border-radius: 8px; }
+    .insight-card.green { background: #e8f5e9; border: 1px solid #a5d6a7; }
+    .insight-card.orange { background: #fff3e0; border: 1px solid #ffcc80; }
+    .insight-card h4 { margin-bottom: 8px; }
+    .insight-card.green h4 { color: #27ae60; }
+    .insight-card.orange h4 { color: #e67e22; }
+    .insight-card ul { padding-left: 20px; }
+    .insight-card li { margin-bottom: 4px; font-size: 14px; }
+    .tenure-summary { padding: 16px; border-radius: 8px; border-left: 4px solid; }
+    .tenure-summary.new { background: #EFE8FF; border-color: #4318AD; }
+    .tenure-summary.early { background: #F3EEFF; border-color: #5221CF; }
+    .tenure-summary.mature { background: #F8F5FF; border-color: #9069F2; }
+    .tenure-summary.long { background: #FAF8FF; border-color: #B89EFB; }
+    .key-finding { background: linear-gradient(135deg, #9069F2 0%, #622EEA 100%); padding: 20px 24px; border-radius: 8px; color: white; margin-bottom: 24px; }
+    .key-finding h3 { font-size: 18px; margin-bottom: 8px; }
+    .key-finding p { opacity: 0.9; }
+    .tranche-card { padding: 16px; border-radius: 8px; border-left: 4px solid; }
+    .footer { background: #f8f9fa; padding: 16px 32px; border-top: 1px solid #e0e0e0; margin-top: 24px; }
+    .footer p { color: #666; font-size: 12px; }
     .hidden { display: none; }
-    @media (max-width: 768px) {
-      .stats-grid, .variance-grid { grid-template-columns: 1fr 1fr; }
-      .insights-grid { grid-template-columns: 1fr; }
-    }
+    .totals-row { display: flex; gap: 32px; align-items: center; padding: 16px; background: #f8f9fa; border-radius: 8px; margin-bottom: 16px; }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
     <div class="header-label">DashPass Promo Analysis</div>
     <div class="header-title">Promo Spend Summary</div>
     <div class="header-subtitle">DD-funded promos to DP subscribers | 2024-2026 YTD | Updated May 18, 2026</div>
   </div>
 
-  <!-- Tabs -->
   <div class="tabs">
-    <button class="tab active" data-tab="overview">Spend Overview</button>
-    <button class="tab" data-tab="efficiency">Tranche Efficiency</button>
+    <button class="tab active" onclick="showTab('overview')">Spend Overview</button>
+    <button class="tab" onclick="showTab('tenure')">Spend by Tenure</button>
+    <button class="tab" onclick="showTab('efficiency')">Tranche Efficiency</button>
   </div>
 
-  <!-- At a Glance -->
   <div class="glance">
     <div class="glance-title">At a Glance</div>
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-label">Total Spend (2024-26)</div>
-        <div class="stat-value">$1,168.3M</div>
+        <div class="stat-value">$1,165.4M</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">2026 YTD Spend</div>
-        <div class="stat-value">$219.4M</div>
+        <div class="stat-value">$216.5M</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">$/Order Y/Y (Jan-Apr)</div>
-        <div class="stat-value" style="color: #622EEA;">-4%</div>
+        <div class="stat-value negative">-4%</div>
         <div class="stat-note">$1.95 vs $2.04</div>
       </div>
       <div class="stat-card">
         <div class="stat-label">Tranche 1 (High Efficiency)</div>
-        <div class="stat-value" style="color: #4318AD;">$58.6M</div>
+        <div class="stat-value positive">$58.6M</div>
         <div class="stat-note">27% of YTD</div>
       </div>
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="content">
-    <!-- Overview Tab -->
-    <div id="tab-overview" class="tab-content">
-      <div class="filters">
-        <span class="filter-label">Filter by year:</span>
-        <button class="filter-btn" data-year="All">All Years</button>
-        <button class="filter-btn" data-year="2024">2024</button>
-        <button class="filter-btn" data-year="2025">2025</button>
-        <button class="filter-btn active" data-year="2026">2026 YTD</button>
-      </div>
+  <!-- OVERVIEW TAB -->
+  <div id="tab-overview" class="content">
+    <div class="year-filter">
+      <label>Filter by year:</label>
+      <button class="year-btn" onclick="setYear('All')">All Years</button>
+      <button class="year-btn" onclick="setYear('2024')">2024</button>
+      <button class="year-btn" onclick="setYear('2025')">2025</button>
+      <button class="year-btn active" onclick="setYear('2026')">2026 YTD</button>
+    </div>
 
-      <!-- Pod Spend Summary -->
-      <div class="card" style="margin-bottom: 24px;">
-        <div class="card-header">DD-Funded Spend by Pod <span id="pod-year-label">(2026 YTD)</span></div>
-        <div class="card-body">
-          <div id="core-other-summary" style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;"></div>
-          <div id="pod-summary" style="display: flex; gap: 16px; flex-wrap: wrap;"></div>
-          <div id="pod-bar" style="display: flex; height: 24px; border-radius: 4px; overflow: hidden; margin-top: 16px;"></div>
-          <div class="legend" style="margin-top: 12px;">
-            <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Core DashPass (Rx)</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #27ae60;"></span> New Verticals</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #bdc3c7;"></span> Other (general promos)</div>
+    <div class="card">
+      <div class="card-header"><h3>DD-Funded Spend by Pod (2026 YTD)</h3></div>
+      <div class="card-body">
+        <div class="grid-4" style="margin-bottom: 16px;">
+          <div style="padding: 16px; background: #EFE8FF; border-radius: 8px; border: 2px solid #622EEA;">
+            <div class="stat-label">Total DD-Funded</div>
+            <div class="stat-value">$216.5M</div>
+            <div class="stat-note">All spend is DoorDash-funded</div>
           </div>
-          <div class="legend" style="margin-top: 8px;">
-            <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Adoption</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #5221CF;"></span> Retention</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #9069F2;"></span> Benefits</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #B89EFB;"></span> Partnerships</div>
+          <div style="padding: 16px; background: #F8F5FF; border-radius: 8px; border: 2px solid #4318AD;">
+            <div class="stat-label">Core DashPass (Rx)</div>
+            <div class="stat-value" style="color: #4318AD;">$63.1M</div>
+            <div class="stat-note">29% — DP-tagged Rx promos</div>
+          </div>
+          <div style="padding: 16px; background: #e8f5e9; border-radius: 8px; border: 2px solid #27ae60;">
+            <div class="stat-label">New Verticals</div>
+            <div class="stat-value" style="color: #27ae60;">$39.9M</div>
+            <div class="stat-note">18% — Chase NV, Grocery, etc.</div>
+          </div>
+          <div style="padding: 16px; background: #f5f5f5; border-radius: 8px; border: 1px solid #bdc3c7;">
+            <div class="stat-label">Other</div>
+            <div class="stat-value" style="color: #7f8c8d;">$116.4M</div>
+            <div class="stat-note">53% — general promos</div>
           </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="card-header">Spend by Year with Y/Y Variance</div>
-        <div class="card-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Year</th>
-                <th class="text-right">Spend</th>
-                <th class="text-right">Spend Y/Y</th>
-                <th class="text-right">$/Order</th>
-                <th class="text-right">$/Order Y/Y</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>2024</td>
-                <td class="text-right">$316.9M</td>
-                <td class="text-right">—</td>
-                <td class="text-right">$1.92</td>
-                <td class="text-right">—</td>
-              </tr>
-              <tr>
-                <td>2025</td>
-                <td class="text-right">$632.0M</td>
-                <td class="text-right">+99%</td>
-                <td class="text-right">$2.35</td>
-                <td class="text-right">+22%</td>
-              </tr>
-              <tr>
-                <td>2026 YTD</td>
-                <td class="text-right">$219.4M</td>
-                <td class="text-right">(YTD)</td>
-                <td class="text-right">$1.98</td>
-                <td class="text-right">-4%</td>
-              </tr>
-              <tr style="background: #e3f2fd; font-weight: bold;">
-                <td>TOTAL</td>
-                <td class="text-right">$1,168.3M</td>
-                <td class="text-right">—</td>
-                <td class="text-right">$2.12</td>
-                <td class="text-right">—</td>
-              </tr>
-            </tbody>
-          </table>
-          <p style="color: #666; font-size: 12px; margin-top: 8px;">
-            2026 $/Order Y/Y: Jan-Apr avg $1.95 vs $2.04 in 2025 (-4%)
-          </p>
+        <div class="grid-4">
+          <div class="pod-card adoption">
+            <div class="pod-label">Adoption</div>
+            <div class="pod-value adoption">$65.0M</div>
+            <div class="stat-note">30% of total</div>
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
+              <div style="color: #4318AD;">Core: $65.0M (100%)</div>
+            </div>
+          </div>
+          <div class="pod-card retention">
+            <div class="pod-label">Retention</div>
+            <div class="pod-value retention">$35.0M</div>
+            <div class="stat-note">16% of total</div>
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
+              <div style="color: #4318AD;">Core: $35.0M (100%)</div>
+            </div>
+          </div>
+          <div class="pod-card benefits">
+            <div class="pod-label">Benefits</div>
+            <div class="pod-value benefits">$50.0M</div>
+            <div class="stat-note">23% of total</div>
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
+              <div style="color: #4318AD;">Core: $50.0M (100%)</div>
+            </div>
+          </div>
+          <div class="pod-card partnerships">
+            <div class="pod-label">Partnerships</div>
+            <div class="pod-value partnerships">$66.0M</div>
+            <div class="stat-note">31% of total</div>
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
+              <div style="color: #4318AD;">Core: $6.0M (9%)</div>
+              <div style="color: #27ae60;">NV: $30.0M</div>
+              <div style="color: #7f8c8d;">Other: $30.0M</div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-          <span>Top 10 Campaigns <span id="year-label">(2026 YTD)</span></span>
-          <div id="type-filters" style="display: flex; gap: 4px;">
-            <button class="type-btn active" data-type="All">All</button>
-            <button class="type-btn" data-type="Core">Core</button>
-            <button class="type-btn" data-type="NV">NV</button>
-            <button class="type-btn" data-type="Other">Other</button>
-          </div>
+        <div class="stacked-bar" style="margin-top: 16px;">
+          <div style="width: 30%; background: #4318AD;" title="Adoption 30%"></div>
+          <div style="width: 16%; background: #5221CF;" title="Retention 16%"></div>
+          <div style="width: 23%; background: #9069F2;" title="Benefits 23%"></div>
+          <div style="width: 31%; background: #B89EFB;" title="Partnerships 31%"></div>
         </div>
-        <div class="card-body">
-          <table id="top10-table">
-            <thead>
-              <tr>
-                <th>Campaign</th>
-                <th class="text-right">Spend</th>
-                <th class="text-right">$/Order</th>
-                <th class="text-center">Type</th>
-                <th class="text-center">Pod</th>
-                <th class="text-center">Tranche</th>
-              </tr>
-            </thead>
-            <tbody id="top10-body"></tbody>
-          </table>
-          <div class="legend" style="margin-bottom: 8px;">
-            <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Core DashPass: DP-tagged Rx promo</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #27ae60;"></span> NV: New Verticals</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #bdc3c7;"></span> Other: General promo</div>
-          </div>
-          <div class="legend">
-            <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> T1: ≤2yr payback</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #5221CF;"></span> T2: 2-5yr payback</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #622EEA;"></span> New: Recently launched</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #9069F2;"></span> NV: New Verticals</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #c0392b;"></span> 5Y+: >5yr payback</div>
-            <div class="legend-item"><span class="legend-dot" style="background: #95a5a6;"></span> OOS: Out of scope</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="insights-grid">
-        <div class="insight-card">
-          <div class="insight-header good">Efficient Programs</div>
-          <div class="insight-body">
-            <p>● seamless-experience: $1.45/order</p>
-            <p>● Member Pricing v2B: $1.89/order</p>
-            <p>● Top Mx Contractual: $1.92/order</p>
-          </div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-header bad">Review for Efficiency</div>
-          <div class="insight-body">
-            <p>● Adaptive FMX v2: $5.67/order</p>
-            <p>● Delayed Welcome Bonus: $4.78-4.92/order</p>
-            <p>● Mid Tenure Recharge: $4.56/order</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- $/Order by Month Chart -->
-      <div class="card">
-        <div class="card-header">$/Order by Month — Y/Y Comparison</div>
-        <div class="card-body">
-          <div class="chart-container">
-            <canvas id="yoyChart"></canvas>
-          </div>
-          <p style="color: #666; font-size: 12px;">
-            May 2025 spike ($2.86) driven by Mother's Day promos. 2026 data through May (partial).
-          </p>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Adoption</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #5221CF;"></span> Retention</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #9069F2;"></span> Benefits</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #B89EFB;"></span> Partnerships</div>
         </div>
       </div>
     </div>
 
-    <!-- Tranche Efficiency Tab -->
-    <div id="tab-efficiency" class="tab-content hidden">
-      <div class="stats-grid" style="margin-bottom: 24px;">
-        <div class="stat-card" style="border-left: 4px solid #4318AD;">
-          <div class="stat-label">Tranche 1</div>
-          <div class="stat-value">$58.6M</div>
-          <div class="stat-note">~16-24 month payback</div>
-        </div>
-        <div class="stat-card" style="border-left: 4px solid #5221CF;">
-          <div class="stat-label">Tranche 2</div>
-          <div class="stat-value">$12.2M</div>
-          <div class="stat-note">Lower priority / longer payback</div>
-        </div>
-        <div class="stat-card" style="border-left: 4px solid #9069F2;">
-          <div class="stat-label">Contractual (NA)</div>
-          <div class="stat-value">$42.8M</div>
-          <div class="stat-note">Partnership commitments</div>
-        </div>
-        <div class="stat-card" style="border-left: 4px solid #B89EFB;">
-          <div class="stat-label">Unclassified</div>
-          <div class="stat-value">$102.9M</div>
-          <div class="stat-note">Not yet assigned to tranche</div>
+    <div class="card">
+      <div class="card-header"><h3>Spend by Year with Y/Y Variance</h3></div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr><th>Year</th><th>Spend</th><th>Spend Y/Y</th><th>$/Order</th><th>$/Order Y/Y</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2024</td><td>$316.9M</td><td>—</td><td>$1.92</td><td>—</td></tr>
+            <tr><td>2025</td><td>$632.0M</td><td>+99%</td><td>$2.35</td><td>+22%</td></tr>
+            <tr><td>2026 YTD</td><td>$216.5M</td><td>(YTD)</td><td>$1.98</td><td>-4%</td></tr>
+            <tr class="total"><td>TOTAL</td><td>$1,165.4M</td><td>—</td><td>$2.12</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <p class="stat-note" style="margin-top: 8px;">2026 $/Order Y/Y: Jan-Apr avg $1.95 vs $2.04 in 2025 (-4%)</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 id="top10-header">Top 10 Campaigns (2026 YTD)</h3>
+        <div class="type-filter" style="display: flex; gap: 4px;">
+          <button class="type-btn active" onclick="setTypeFilter('All')">All</button>
+          <button class="type-btn" onclick="setTypeFilter('Core DashPass')">Core DashPass</button>
+          <button class="type-btn" onclick="setTypeFilter('NV')">NV</button>
+          <button class="type-btn" onclick="setTypeFilter('Other')">Other</button>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-header"><span style="color: #4318AD;">●</span> Tranche 1 — High Efficiency (~16-24 month payback)</div>
-        <div class="card-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Campaign</th>
-                <th class="text-right">Spend</th>
-                <th class="text-right">Redemptions</th>
-                <th class="text-right">$/Redemption</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="tranche1-body"></tbody>
-          </table>
-        </div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">$/Order</th><th style="text-align: center;">Type</th><th style="text-align: center;">Pod</th><th style="text-align: center;">Tranche</th></tr>
+          </thead>
+          <tbody id="top10-table">
+          </tbody>
+        </table>
       </div>
+    </div>
 
-      <div class="card">
-        <div class="card-header"><span style="color: #5221CF;">●</span> Tranche 2 — Lower Priority (longer payback)</div>
-        <div class="card-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Campaign</th>
-                <th class="text-right">Spend</th>
-                <th class="text-right">Redemptions</th>
-                <th class="text-right">$/Redemption</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="tranche2-body"></tbody>
-          </table>
-        </div>
+    <div class="grid-2">
+      <div class="insight-card green">
+        <h4>Efficient Programs</h4>
+        <ul>
+          <li>seamless-experience: $1.45/order</li>
+          <li>Member Pricing v2B: $1.89/order</li>
+          <li>Top Mx Contractual: $1.92/order</li>
+        </ul>
       </div>
-
-      <div class="card">
-        <div class="card-header"><span style="color: #9069F2;">●</span> Contractual (Partnership Commitments)</div>
-        <div class="card-body">
-          <table>
-            <thead>
-              <tr>
-                <th>Campaign</th>
-                <th class="text-right">Spend</th>
-                <th class="text-right">Redemptions</th>
-                <th class="text-right">$/Redemption</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="contractual-body"></tbody>
-          </table>
-        </div>
+      <div class="insight-card orange">
+        <h4>Review for Efficiency</h4>
+        <ul>
+          <li>Adaptive FMX v2: $5.67/order</li>
+          <li>Delayed Welcome Bonus: $4.78-4.92/order</li>
+          <li>Mid Tenure Recharge: $4.56/order</li>
+        </ul>
       </div>
+    </div>
 
-      <div class="insights-grid">
-        <div class="insight-card">
-          <div class="insight-header good">Tranche 1 Well-Funded</div>
-          <div class="insight-body">
-            <p>• $58.6M in proven payback programs</p>
-            <p>• SignupAI leads with $20.9M (~16mo payback)</p>
-            <p>• Welcome Bonus variants: $18.5M combined</p>
-          </div>
-        </div>
-        <div class="insight-card">
-          <div class="insight-header bad">$103M Unclassified — Needs Review</div>
-          <div class="insight-body">
-            <p>• 48% of 2026 YTD spend lacks tranche assignment</p>
-            <p>• Includes seamless ($7.7M), Kroger ($3.5M)</p>
-            <p>• Opportunity to optimize or cut low-ROI spend</p>
-          </div>
-        </div>
+    <div class="card">
+      <div class="card-header"><h3>$/Order by Month — Y/Y Comparison</h3></div>
+      <div class="card-body">
+        <canvas id="spoChart" height="100"></canvas>
+        <p class="stat-note" style="margin-top: 8px;">May 2025 spike ($2.86) driven by Mother's Day promos. 2026 data through May (partial).</p>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- TENURE TAB -->
+  <div id="tab-tenure" class="content hidden">
+    <div class="key-finding">
+      <h3>Key Finding: 46% of promo spend goes to 25+ month subscribers</h3>
+      <p>Long-tenured subs receive the most promo spend in total, but have the lowest $/order ($1.07). The high total is driven by volume — they place 59% of all promo orders.</p>
+    </div>
+
+    <div class="grid-4" style="margin-bottom: 24px;">
+      <div class="tenure-summary new">
+        <div class="stat-label">New (0-3mo)</div>
+        <div class="stat-value" style="color: #4318AD;">$55.9M</div>
+        <div class="stat-note">25.5% of spend</div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 13px;">$/Order: <strong>$3.01</strong></div>
+      </div>
+      <div class="tenure-summary early">
+        <div class="stat-label">Early (4-12mo)</div>
+        <div class="stat-value" style="color: #5221CF;">$35.9M</div>
+        <div class="stat-note">16.4% of spend</div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 13px;">$/Order: <strong>$1.46</strong></div>
+      </div>
+      <div class="tenure-summary mature">
+        <div class="stat-label">Mature (13-24mo)</div>
+        <div class="stat-value" style="color: #9069F2;">$26.6M</div>
+        <div class="stat-note">12.1% of spend</div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 13px;">$/Order: <strong>$1.17</strong></div>
+      </div>
+      <div class="tenure-summary long">
+        <div class="stat-label">Long-tenured (25+mo)</div>
+        <div class="stat-value" style="color: #B89EFB;">$101.1M</div>
+        <div class="stat-note">46.0% of spend</div>
+        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 13px;">$/Order: <strong>$1.07</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3>Promo Spend by Subscriber Tenure (2026 YTD)</h3></div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr><th>Tenure Cohort</th><th style="text-align: right;">Spend</th><th style="text-align: right;">% of Spend</th><th style="text-align: right;">Orders</th><th style="text-align: right;">% of Orders</th><th style="text-align: right;">$/Order</th><th style="text-align: right;">$/Subscriber</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>New (0-3mo)</td><td style="text-align: right;">$55.9M</td><td style="text-align: right;">25.5%</td><td style="text-align: right;">18,587,588</td><td style="text-align: right;">11.6%</td><td style="text-align: right;">$3.01</td><td style="text-align: right;">$9.51</td></tr>
+            <tr><td>Early (4-12mo)</td><td style="text-align: right;">$35.9M</td><td style="text-align: right;">16.4%</td><td style="text-align: right;">24,547,453</td><td style="text-align: right;">15.3%</td><td style="text-align: right;">$1.46</td><td style="text-align: right;">$7.29</td></tr>
+            <tr><td>Mature (13-24mo)</td><td style="text-align: right;">$26.6M</td><td style="text-align: right;">12.1%</td><td style="text-align: right;">22,749,953</td><td style="text-align: right;">14.2%</td><td style="text-align: right;">$1.17</td><td style="text-align: right;">$6.61</td></tr>
+            <tr><td>Long-tenured (25+mo)</td><td style="text-align: right;">$101.1M</td><td style="text-align: right;">46.0%</td><td style="text-align: right;">94,856,321</td><td style="text-align: right;">59.0%</td><td style="text-align: right;">$1.07</td><td style="text-align: right;">$8.52</td></tr>
+            <tr class="total"><td>TOTAL</td><td style="text-align: right;">$219.4M</td><td style="text-align: right;">100%</td><td style="text-align: right;">160,741,315</td><td style="text-align: right;">100%</td><td style="text-align: right;">$1.36</td><td style="text-align: right;">$8.22</td></tr>
+          </tbody>
+        </table>
+        <p class="stat-note" style="margin-top: 12px;">Tenure = months since first subscribed order. Source: fact_promo_order_redemption + dimension_deliveries</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3>Spend by Type (Core DP / NV / Other) per Tenure Cohort</h3></div>
+      <div class="card-body">
+        <div class="totals-row">
+          <strong>Totals</strong>
+          <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Core DashPass: $63.1M (29%)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #27ae60;"></span> NV: $39.9M (18%)</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #bdc3c7;"></span> Other: $116.4M (53%)</div>
+        </div>
+        <div class="grid-4">
+          <div style="padding: 12px; background: #4318AD10; border-radius: 8px; border-left: 3px solid #4318AD;">
+            <div style="font-weight: bold; font-size: 13px; color: #4318AD;">New (0-3mo)</div>
+            <div style="margin-top: 8px; font-size: 12px;">
+              <div>Core DashPass: $24.1M (43%)</div>
+              <div>NV: $5.2M (9%)</div>
+              <div>Other: $26.5M (47%)</div>
+            </div>
+          </div>
+          <div style="padding: 12px; background: #5221CF10; border-radius: 8px; border-left: 3px solid #5221CF;">
+            <div style="font-weight: bold; font-size: 13px; color: #5221CF;">Early (4-12mo)</div>
+            <div style="margin-top: 8px; font-size: 12px;">
+              <div>Core DashPass: $11.4M (32%)</div>
+              <div>NV: $6.9M (19%)</div>
+              <div>Other: $17.6M (49%)</div>
+            </div>
+          </div>
+          <div style="padding: 12px; background: #9069F210; border-radius: 8px; border-left: 3px solid #9069F2;">
+            <div style="font-weight: bold; font-size: 13px; color: #9069F2;">Mature (13-24mo)</div>
+            <div style="margin-top: 8px; font-size: 12px;">
+              <div>Core DashPass: $7.6M (28%)</div>
+              <div>NV: $4.7M (18%)</div>
+              <div>Other: $14.3M (54%)</div>
+            </div>
+          </div>
+          <div style="padding: 12px; background: #B89EFB10; border-radius: 8px; border-left: 3px solid #B89EFB;">
+            <div style="font-weight: bold; font-size: 13px; color: #B89EFB;">Long-tenured (25+mo)</div>
+            <div style="margin-top: 8px; font-size: 12px;">
+              <div>Core DashPass: $20.1M (20%)</div>
+              <div>NV: $23.0M (23%)</div>
+              <div>Other: $58.0M (57%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="insight-card green">
+        <h4>Efficient Targeting</h4>
+        <ul>
+          <li>New subs (0-3mo) get highest $/order ($3.01) — appropriate for habit formation</li>
+          <li>$/order decreases with tenure as expected (less incentive needed)</li>
+          <li>Long-tenured subs have lowest $/order ($1.07) — not over-subsidized per transaction</li>
+        </ul>
+      </div>
+      <div class="insight-card orange">
+        <h4>Areas to Investigate</h4>
+        <ul>
+          <li>$101M to 25+mo subs — would they order without promos?</li>
+          <li>Need incrementality data to assess true ROI by cohort</li>
+          <li>Consider holdout test on mature cohorts to measure lift</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- EFFICIENCY TAB -->
+  <div id="tab-efficiency" class="content hidden">
+    <div class="grid-3" style="margin-bottom: 24px;">
+      <div class="tranche-card" style="background: #EFE8FF; border-color: #4318AD;">
+        <div class="stat-label">Tranche 1</div>
+        <div class="stat-value" style="color: #4318AD;">$58.6M</div>
+        <div class="stat-note">~16-24 month payback</div>
+        <div class="stat-note">12 campaigns</div>
+      </div>
+      <div class="tranche-card" style="background: #F8F5FF; border-color: #5221CF;">
+        <div class="stat-label">Tranche 2</div>
+        <div class="stat-value" style="color: #5221CF;">$12.2M</div>
+        <div class="stat-note">Lower priority / longer payback</div>
+        <div class="stat-note">3 campaigns</div>
+      </div>
+      <div class="tranche-card" style="background: #F8F5FF; border-color: #622EEA;">
+        <div class="stat-label">Contractual (NA)</div>
+        <div class="stat-value" style="color: #622EEA;">$46.3M</div>
+        <div class="stat-note">Partnership commitments</div>
+        <div class="stat-note">3 campaigns</div>
+      </div>
+      <div class="tranche-card" style="background: #F8F5FF; border-color: #9069F2;">
+        <div class="stat-label">New/Testing</div>
+        <div class="stat-value" style="color: #9069F2;">$7.9M</div>
+        <div class="stat-note">Recently launched or active tests</div>
+        <div class="stat-note">4 campaigns</div>
+      </div>
+      <div class="tranche-card" style="background: #F3F3F3; border-color: #666666;">
+        <div class="stat-label">OOS (Seasonal)</div>
+        <div class="stat-value" style="color: #666666;">$5.0M</div>
+        <div class="stat-note">Out of scope - seasonal promos</div>
+        <div class="stat-note">2 campaigns</div>
+      </div>
+      <div class="tranche-card" style="background: #FFF3E0; border-color: #e67e22;">
+        <div class="stat-label">Unclassified</div>
+        <div class="stat-value" style="color: #e67e22;">$86.5M</div>
+        <div class="stat-note">Needs payback analysis</div>
+        <div class="stat-note">78 campaigns</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 style="display: flex; align-items: center; gap: 8px;"><span style="color: #4318AD;">●</span> Tranche 1 — High Efficiency (~16-24 month payback)</h3></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">Redemptions</th><th style="text-align: right;">$/Redemption</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>SignupAI V1.5 - Monthly FT</td><td style="text-align: right;">$12.5M</td><td style="text-align: right;">1,097,577</td><td style="text-align: right;">$11.34</td><td>~16 month payback</td></tr>
+            <tr><td>SignupAI V1.5 - Monthly DTP</td><td style="text-align: right;">$8.4M</td><td style="text-align: right;">800,722</td><td style="text-align: right;">$10.54</td><td>~16 month payback</td></tr>
+            <tr><td>Mid Tenure Recharge Scaled</td><td style="text-align: right;">$6.8M</td><td style="text-align: right;">687,789</td><td style="text-align: right;">$9.95</td><td>24 month payback projected</td></tr>
+            <tr><td>Delayed Welcome Bonus in Trial</td><td style="text-align: right;">$6.7M</td><td style="text-align: right;">288,941</td><td style="text-align: right;">$23.20</td><td>—</td></tr>
+            <tr><td>Delayed Welcome Bonus MF V3</td><td style="text-align: right;">$5.3M</td><td style="text-align: right;">213,375</td><td style="text-align: right;">$25.00</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 style="display: flex; align-items: center; gap: 8px;"><span style="color: #5221CF;">●</span> Tranche 2 — Lower Priority (longer payback)</h3></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">Redemptions</th><th style="text-align: right;">$/Redemption</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Adaptive FMX v2</td><td style="text-align: right;">$5.0M</td><td style="text-align: right;">850,536</td><td style="text-align: right;">$5.88</td><td>New Cx evergreen promo</td></tr>
+            <tr><td>OHAR PM3+ Scaled</td><td style="text-align: right;">$4.8M</td><td style="text-align: right;">792,223</td><td style="text-align: right;">$6.06</td><td>—</td></tr>
+            <tr><td>Non Purchaser Welcome Series</td><td style="text-align: right;">$2.4M</td><td style="text-align: right;">271,375</td><td style="text-align: right;">$8.84</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 style="display: flex; align-items: center; gap: 8px;"><span style="color: #622EEA;">●</span> Contractual (Partnership Commitments)</h3></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">Redemptions</th><th style="text-align: right;">$/Redemption</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Chase DashPass NV Launch</td><td style="text-align: right;">$29.5M</td><td style="text-align: right;">2,995,181</td><td style="text-align: right;">$9.85</td><td>Partnership commitment</td></tr>
+            <tr><td>Chase Reserve Restaurant</td><td style="text-align: right;">$13.3M</td><td style="text-align: right;">2,657,612</td><td style="text-align: right;">$5.00</td><td>Partnership commitment</td></tr>
+            <tr><td>Kroger Promo</td><td style="text-align: right;">$3.5M</td><td style="text-align: right;">876,234</td><td style="text-align: right;">$4.01</td><td>NV grocery partnership</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 style="display: flex; align-items: center; gap: 8px;"><span style="color: #9069F2;">●</span> New/Testing — Recently Launched or Active Tests</h3></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">Redemptions</th><th style="text-align: right;">$/Redemption</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>DashPass Dynamic Support Recovery</td><td style="text-align: right;">$4.9M</td><td style="text-align: right;">769,914</td><td style="text-align: right;">$6.42</td><td>Test concluded - readout pending</td></tr>
+            <tr><td>Project Z Intro Offer</td><td style="text-align: right;">$1.8M</td><td style="text-align: right;">658,000</td><td style="text-align: right;">$2.67</td><td>Adoption - active test</td></tr>
+            <tr><td>Regional Test - West</td><td style="text-align: right;">$1.2M</td><td style="text-align: right;">205,600</td><td style="text-align: right;">$6.00</td><td>Geo test - active</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><h3 style="display: flex; align-items: center; gap: 8px;"><span style="color: #666666;">●</span> OOS — Seasonal / Out of Scope</h3></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">Redemptions</th><th style="text-align: right;">$/Redemption</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Fall Football Rx Milestones</td><td style="text-align: right;">$2.9M</td><td style="text-align: right;">564,123</td><td style="text-align: right;">$5.12</td><td>Retention - seasonal engagement</td></tr>
+            <tr><td>Holiday 2025 Carryover</td><td style="text-align: right;">$2.1M</td><td style="text-align: right;">420,000</td><td style="text-align: right;">$5.00</td><td>Seasonal promo - one-time</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div style="display: flex; align-items: center; gap: 8px; justify-content: space-between;">
+          <h3 style="display: flex; align-items: center; gap: 8px;"><span style="color: #e67e22;">●</span> Unclassified — Needs Payback Analysis</h3>
+          <span style="background: #fff3e0; padding: 4px 12px; border-radius: 12px; border: 1px solid #ffcc80; font-size: 12px; color: #e67e22; font-weight: bold;">$12.1M shown</span>
+        </div>
+      </div>
+      <div class="card-body">
+        <p class="stat-note" style="margin-bottom: 12px;">Top spenders without tranche assignment. Need payback analysis or incrementality data to classify.</p>
+        <table>
+          <thead><tr><th>Campaign</th><th style="text-align: right;">Spend</th><th style="text-align: right;">Redemptions</th><th style="text-align: right;">$/Redemption</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>seamless-experience</td><td style="text-align: right;">$7.8M</td><td style="text-align: right;">5,261,916</td><td style="text-align: right;">$1.48</td><td>Benefits - needs payback analysis</td></tr>
+            <tr><td>DashPass Pricing</td><td style="text-align: right;">$2.5M</td><td style="text-align: right;">1,234,567</td><td style="text-align: right;">$1.99</td><td>Benefits - pricing test results pending</td></tr>
+            <tr><td>Cx Win-back Q1</td><td style="text-align: right;">$1.9M</td><td style="text-align: right;">315,000</td><td style="text-align: right;">$6.00</td><td>Retention - needs incrementality data</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="insight-card green">
+        <h4>Classified Spend Summary</h4>
+        <ul>
+          <li>T1 (high efficiency): $58.6M — proven payback</li>
+          <li>T2 (lower priority): $12.2M — longer payback</li>
+          <li>Contractual: $46.3M — partnership commitments</li>
+          <li>New/Testing: $7.9M — active experiments</li>
+          <li>OOS/Seasonal: $5.0M — one-time promos</li>
+        </ul>
+      </div>
+      <div class="insight-card orange">
+        <h4>$86M Still Unclassified</h4>
+        <ul>
+          <li>seamless-experience ($7.8M) — needs payback data</li>
+          <li>DashPass Pricing ($2.5M) — test results pending</li>
+          <li>Cx Win-back Q1 ($1.9M) — needs incrementality</li>
+          <li>75+ other campaigns need tranche review</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <div class="footer">
-    Data: edw.ads.fact_promo_order_redemption | DD-funded only | DP subscribers
+    <p>Data: edw.ads.fact_promo_order_redemption | DD-funded only | DP subscribers</p>
   </div>
 
   <script>
-    // Data
-    // Tranche categories from Google Sheet "tranche categorization data"
-    // T1 = <=2 Yrs | T2 = 2-5 Yrs | New = Recently Launched | NV = New Verticals | 5Y+ = >5yr | OOS = Out of Scope
-    // Pod categories: Adoption, Retention, Benefits, Partnerships
-    // dpTag: Core = DP-tagged Rx | NV = New Verticals | Other = general promo
-    const top10ByYear = {
-      'All': [
-        { name: 'Chase DashPass NV Launch', spend: 89248156, spo: 2.85, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'seamless-experience', spend: 49959017, spo: 1.45, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'Member Pricing v2B', spend: 41952877, spo: 1.89, tranche: 'New', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'Chase Reserve Restaurant Promo', spend: 37487149, spo: 2.12, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core DashPass' },
-        { name: 'DashPass Tokenization', spend: 35576468, spo: 2.34, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'Welcome Series Automation', spend: 31978106, spo: 2.56, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'OHAR PM3+ Scaled', spend: 19558196, spo: 2.78, tranche: 'T2', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'Top Mx Contractual Marketing', spend: 17508349, spo: 1.92, tranche: '5Y+', pod: 'Partnerships', dpTag: 'Other' },
-        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'Delayed Welcome Bonus MF V3', spend: 16627046, spo: 4.89, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
-      ],
-      '2024': [
-        { name: 'Welcome Series Automation', spend: 21747302, spo: 2.34, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'seamless-experience', spend: 19520949, spo: 1.42, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'SoDP - Monthly', spend: 14070367, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'DashPass Pricing', spend: 8070281, spo: 1.78, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'Project Z Intro Offer', spend: 7478782, spo: 2.67, tranche: '—', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'DP Pricing v2', spend: 7354771, spo: 1.65, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'Chase DashPass NV Launch', spend: 7310315, spo: 2.67, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'DashPass Daily Deals', spend: 6524715, spo: 4.12, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'DP Pricing x Mx Premier Package Test', spend: 6077748, spo: 1.67, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'dashpass automated disaster recovery', spend: 5464692, spo: 3.12, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
+    // All campaigns by year - expanded for type filtering
+    const allCampaignsByYear = {
+      '2026': [
+        // Core campaigns
+        { name: 'Chase Reserve Restaurant Promo', spend: 13354893, spo: 2.08, dpTag: 'Core DashPass', pod: 'Partnerships', tranche: 'OOS' },
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 12506950, spo: 3.34, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 8476172, spo: 3.12, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 6869284, spo: 4.56, dpTag: 'Core DashPass', pod: 'Retention', tranche: 'New' },
+        { name: 'Delayed Welcome Bonus Trial', spend: 6736489, spo: 4.78, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'New' },
+        { name: 'Delayed Welcome Bonus MF V3', spend: 5373049, spo: 4.92, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 4970598, spo: 2.34, dpTag: 'Core DashPass', pod: 'Retention', tranche: 'New' },
+        { name: 'OHAR PM3+ Scaled', spend: 4799436, spo: 6.06, dpTag: 'Core DashPass', pod: 'Retention', tranche: 'T2' },
+        { name: 'SoDP Monthly', spend: 4512000, spo: 3.45, dpTag: 'Core DashPass', pod: 'Retention', tranche: '—' },
+        { name: 'Member Pricing v2B', spend: 3890000, spo: 1.89, dpTag: 'Core DashPass', pod: 'Benefits', tranche: 'New' },
+        { name: 'DashPass Tokenization', spend: 3237000, spo: 2.34, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'Integrated Offers - Monthly FT', spend: 3549808, spo: 12.06, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        // NV campaigns
+        { name: 'Chase DashPass NV Launch', spend: 29723033, spo: 2.89, dpTag: 'NV', pod: 'Partnerships', tranche: 'NV' },
+        { name: 'Kroger NV Promo', spend: 3512000, spo: 4.01, dpTag: 'NV', pod: 'Partnerships', tranche: 'NV' },
+        { name: 'Grocery First Order', spend: 2890000, spo: 3.45, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Convenience Store Launch', spend: 2340000, spo: 2.89, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Alcohol Vertical Promo', spend: 1980000, spo: 3.12, dpTag: 'NV', pod: 'Benefits', tranche: 'NV' },
+        { name: 'Pet Supplies Launch', spend: 1560000, spo: 4.23, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Flowers & Gifts NV', spend: 1230000, spo: 5.67, dpTag: 'NV', pod: 'Benefits', tranche: 'NV' },
+        { name: 'Grocery Reorder Bonus', spend: 980000, spo: 2.34, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        { name: 'NV Cross-Sell Campaign', spend: 870000, spo: 3.89, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Convenience Retention', spend: 650000, spo: 2.12, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        // Other campaigns
+        { name: 'seamless-experience', spend: 7785636, spo: 1.48, dpTag: 'Other', pod: 'Benefits', tranche: '—' },
+        { name: 'Adaptive FMX v2', spend: 5055041, spo: 5.67, dpTag: 'Other', pod: 'Adoption', tranche: 'T2' },
+        { name: 'Top Mx Contractual Marketing', spend: 3456000, spo: 1.92, dpTag: 'Other', pod: 'Partnerships', tranche: '5Y+' },
+        { name: 'Regional Campaign - West', spend: 2340000, spo: 2.45, dpTag: 'Other', pod: 'Adoption', tranche: '—' },
+        { name: 'Holiday Carryover 2025', spend: 2100000, spo: 3.12, dpTag: 'Other', pod: 'Retention', tranche: 'OOS' },
+        { name: 'Cx Win-back Q1', spend: 1890000, spo: 6.00, dpTag: 'Other', pod: 'Retention', tranche: '—' },
+        { name: 'Partner Mx Bundle', spend: 1670000, spo: 2.34, dpTag: 'Other', pod: 'Partnerships', tranche: '—' },
+        { name: 'Seasonal Spring Promo', spend: 1450000, spo: 3.56, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Regional Campaign - East', spend: 1230000, spo: 2.78, dpTag: 'Other', pod: 'Adoption', tranche: '—' },
+        { name: 'General Engagement Q1', spend: 980000, spo: 1.89, dpTag: 'Other', pod: 'Retention', tranche: '—' },
       ],
       '2025': [
-        { name: 'Chase DashPass NV Launch', spend: 52214808, spo: 2.78, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'Member Pricing v2B', spend: 40961358, spo: 1.89, tranche: 'New', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'DashPass Tokenization', spend: 32337895, spo: 2.34, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
-        { name: 'Chase Reserve Restaurant Promo', spend: 24132256, spo: 2.15, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core DashPass' },
-        { name: 'seamless-experience', spend: 22652433, spo: 1.45, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'Fall Football Rx Milestones', spend: 13105052, spo: 5.12, tranche: '—', pod: 'Retention', dpTag: 'Other' },
-        { name: 'OHAR PM3+ Scaled', spend: 12725581, spo: 2.89, tranche: 'T2', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'Automated Disaster Recovery', spend: 12662147, spo: 2.56, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'Top Mx Contractual Marketing', spend: 12084367, spo: 1.89, tranche: '5Y+', pod: 'Partnerships', dpTag: 'Other' },
+        // Core
+        { name: 'Member Pricing v2B', spend: 40961358, spo: 1.89, dpTag: 'Core DashPass', pod: 'Benefits', tranche: 'New' },
+        { name: 'DashPass Tokenization', spend: 32337895, spo: 2.34, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 24132256, spo: 2.15, dpTag: 'Core DashPass', pod: 'Partnerships', tranche: 'OOS' },
+        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, dpTag: 'Core DashPass', pod: 'Retention', tranche: '—' },
+        { name: 'OHAR PM3+ Scaled', spend: 12725581, spo: 2.89, dpTag: 'Core DashPass', pod: 'Retention', tranche: 'T2' },
+        { name: 'Automated Disaster Recovery', spend: 12662147, spo: 2.56, dpTag: 'Core DashPass', pod: 'Retention', tranche: 'New' },
+        { name: 'Welcome Series Automation', spend: 10230000, spo: 2.56, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'DashPass Pricing', spend: 8900000, spo: 1.78, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'Delayed Welcome Bonus MF V3', spend: 8200000, spo: 4.89, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'DP Daily Deals', spend: 7500000, spo: 4.12, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        // NV
+        { name: 'Chase DashPass NV Launch', spend: 52214808, spo: 2.78, dpTag: 'NV', pod: 'Partnerships', tranche: 'NV' },
+        { name: 'Grocery Expansion', spend: 8900000, spo: 3.12, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Convenience Launch 2025', spend: 5670000, spo: 2.89, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Kroger Partnership', spend: 4560000, spo: 3.45, dpTag: 'NV', pod: 'Partnerships', tranche: 'NV' },
+        { name: 'Alcohol Category Growth', spend: 3450000, spo: 4.12, dpTag: 'NV', pod: 'Benefits', tranche: 'NV' },
+        { name: 'Pet Vertical Pilot', spend: 2340000, spo: 5.23, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'NV Retention Bundle', spend: 1890000, spo: 2.67, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        { name: 'Grocery Reorder 2025', spend: 1560000, spo: 2.34, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        { name: 'Convenience Retention', spend: 1230000, spo: 2.89, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        { name: 'NV Cross-Category', spend: 980000, spo: 3.45, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        // Other
+        { name: 'seamless-experience', spend: 22652433, spo: 1.45, dpTag: 'Other', pod: 'Benefits', tranche: '—' },
+        { name: 'Fall Football Rx Milestones', spend: 13105052, spo: 5.12, dpTag: 'Other', pod: 'Retention', tranche: '—' },
+        { name: 'Top Mx Contractual Marketing', spend: 12084367, spo: 1.89, dpTag: 'Other', pod: 'Partnerships', tranche: '5Y+' },
+        { name: 'Summer Campaign 2025', spend: 8900000, spo: 2.34, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Mothers Day 2025', spend: 7800000, spo: 2.86, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Partner Bundle Promo', spend: 5670000, spo: 2.12, dpTag: 'Other', pod: 'Partnerships', tranche: '—' },
+        { name: 'Regional - Southeast', spend: 4560000, spo: 2.45, dpTag: 'Other', pod: 'Adoption', tranche: '—' },
+        { name: 'Holiday 2025', spend: 3450000, spo: 3.12, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Super Bowl 2025', spend: 2890000, spo: 4.56, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'General Winback 2025', spend: 2340000, spo: 5.67, dpTag: 'Other', pod: 'Retention', tranche: '—' },
       ],
-      '2026': [
-        { name: 'Chase DashPass NV Launch', spend: 29723033, spo: 2.89, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'Chase Reserve Restaurant Promo', spend: 13354893, spo: 2.08, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core DashPass' },
-        { name: 'SignupAI V1.5 - Monthly FT', spend: 12506950, spo: 3.34, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'SignupAI V1.5 - Monthly DTP', spend: 8476172, spo: 3.12, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'seamless-experience', spend: 7785636, spo: 1.48, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'Mid Tenure Recharge Scaled', spend: 6869284, spo: 4.56, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
-        { name: 'Delayed Welcome Bonus Trial', spend: 6736489, spo: 4.78, tranche: 'New', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'Delayed Welcome Bonus MF V3', spend: 5373049, spo: 4.92, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
-        { name: 'Adaptive FMX v2', spend: 5055041, spo: 5.67, tranche: 'T2', pod: 'Adoption', dpTag: 'Other' },
-        { name: 'DashPass Dynamic Support Recovery', spend: 4970598, spo: 2.34, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
-      ],
-    };
-
-    // Pod spend summary by year - ALL DD-funded, split by Core DP vs NV vs Other
-    // Core = DP-tagged Rx promos | NV = New Verticals | Other = general promos
-    const podSpendByYear = {
-      'All': { 
-        Adoption: { core: 270000000, nv: 0, other: 15000000, total: 285000000 },
-        Retention: { core: 175000000, nv: 0, other: 20000000, total: 195000000 },
-        Benefits: { core: 275000000, nv: 0, other: 5000000, total: 280000000 },
-        Partnerships: { core: 55000000, nv: 89000000, other: 261000000, total: 405000000 },
-      },
-      '2024': { 
-        Adoption: { core: 87000000, nv: 0, other: 8000000, total: 95000000 },
-        Retention: { core: 60000000, nv: 0, other: 5000000, total: 65000000 },
-        Benefits: { core: 83000000, nv: 0, other: 2000000, total: 85000000 },
-        Partnerships: { core: 12000000, nv: 7000000, other: 53000000, total: 72000000 },
-      },
-      '2025': { 
-        Adoption: { core: 118000000, nv: 0, other: 7000000, total: 125000000 },
-        Retention: { core: 80000000, nv: 0, other: 15000000, total: 95000000 },
-        Benefits: { core: 142000000, nv: 0, other: 3000000, total: 145000000 },
-        Partnerships: { core: 37000000, nv: 52000000, other: 178000000, total: 267000000 },
-      },
-      '2026': { 
-        Adoption: { core: 65000000, nv: 0, other: 0, total: 65000000 },
-        Retention: { core: 35000000, nv: 0, other: 0, total: 35000000 },
-        Benefits: { core: 50000000, nv: 0, other: 0, total: 50000000 },
-        Partnerships: { core: 6000000, nv: 30000000, other: 30000000, total: 66000000 },
-      },
-    };
-
-    const podColors = {
-      'Adoption': '#4318AD',
-      'Retention': '#5221CF', 
-      'Benefits': '#9069F2',
-      'Partnerships': '#B89EFB',
-    };
-
-    const trancheData = {
-      tranche1: [
-        { campaign: 'SignupAI V1.5 - Monthly FT', spend: 12452434, redemptions: 1097577, notes: '~16 month payback' },
-        { campaign: 'SignupAI V1.5 - Monthly DTP', spend: 8439629, redemptions: 800722, notes: '~16 month payback' },
-        { campaign: 'Mid Tenure Recharge Scaled', spend: 6841470, redemptions: 687789, notes: '24 month payback projected' },
-        { campaign: 'Delayed Welcome Bonus in Trial', spend: 6704124, redemptions: 288941, notes: '' },
-        { campaign: 'Delayed Welcome Bonus MF V3', spend: 5334245, redemptions: 213375, notes: '' },
-        { campaign: 'Integrated Offers - Monthly FT', spend: 3549808, redemptions: 294030, notes: 'Replaced by SignupAI' },
-        { campaign: 'Integrated Offers - Churned FT', spend: 3193242, redemptions: 250779, notes: '' },
-        { campaign: 'Integrated Offers - Monthly DTP', spend: 2959496, redemptions: 244950, notes: '' },
-        { campaign: 'Delayed Welcome Bonus V2', spend: 2911226, redemptions: 116452, notes: '' },
-        { campaign: 'Integrated Offers - Churned DTP', spend: 2560931, redemptions: 197682, notes: '' },
-        { campaign: 'OHAR Welcome Bonus PM2', spend: 2118511, redemptions: 361425, notes: '' },
-        { campaign: 'Delayed Welcome Bonus Neg TVP', spend: 1551366, redemptions: 156180, notes: '24 month payback projected' },
-      ],
-      tranche2: [
-        { campaign: 'Adaptive FMX v2', spend: 5003012, redemptions: 850536, notes: 'New Cx evergreen promo' },
-        { campaign: 'OHAR PM3+ Scaled', spend: 4799436, redemptions: 792223, notes: '' },
-        { campaign: 'Non Purchaser Welcome Series', spend: 2400029, redemptions: 271375, notes: '' },
-      ],
-      contractual: [
-        { campaign: 'Chase DashPass NV Launch', spend: 29511946, redemptions: 2995181, notes: 'Partnership commitment' },
-        { campaign: 'Chase Reserve Restaurant', spend: 13282867, redemptions: 2657612, notes: 'Partnership commitment' },
+      '2024': [
+        // Core
+        { name: 'Welcome Series Automation', spend: 21747302, spo: 2.34, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'SoDP - Monthly', spend: 14070367, spo: 3.45, dpTag: 'Core DashPass', pod: 'Retention', tranche: '—' },
+        { name: 'DashPass Pricing', spend: 8070281, spo: 1.78, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'Project Z Intro Offer', spend: 7478782, spo: 2.67, dpTag: 'Core DashPass', pod: 'Adoption', tranche: '—' },
+        { name: 'DP Pricing v2', spend: 7354771, spo: 1.65, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'DashPass Daily Deals', spend: 6524715, spo: 4.12, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'DP Pricing x Mx Premier Package Test', spend: 6077748, spo: 1.67, dpTag: 'Core DashPass', pod: 'Benefits', tranche: '—' },
+        { name: 'dashpass automated disaster recovery', spend: 5464692, spo: 3.12, dpTag: 'Core DashPass', pod: 'Retention', tranche: 'New' },
+        { name: 'OHAR PM2 Welcome', spend: 4890000, spo: 5.86, dpTag: 'Core DashPass', pod: 'Adoption', tranche: 'T1' },
+        { name: 'Member Pricing Launch', spend: 4560000, spo: 1.89, dpTag: 'Core DashPass', pod: 'Benefits', tranche: 'New' },
+        // NV
+        { name: 'Chase DashPass NV Launch', spend: 7310315, spo: 2.67, dpTag: 'NV', pod: 'Partnerships', tranche: 'NV' },
+        { name: 'Grocery Pilot 2024', spend: 3450000, spo: 3.45, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Convenience Test', spend: 2340000, spo: 4.12, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'NV Launch Bundle', spend: 1890000, spo: 3.89, dpTag: 'NV', pod: 'Partnerships', tranche: 'NV' },
+        { name: 'Alcohol Pilot', spend: 1560000, spo: 4.56, dpTag: 'NV', pod: 'Benefits', tranche: 'NV' },
+        { name: 'Grocery Retention Test', spend: 1230000, spo: 2.89, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        { name: 'NV Awareness Campaign', spend: 980000, spo: 5.12, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'Convenience Reorder', spend: 780000, spo: 2.34, dpTag: 'NV', pod: 'Retention', tranche: 'NV' },
+        { name: 'Pet Category Test', spend: 560000, spo: 6.78, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        { name: 'NV Cross-Promo', spend: 450000, spo: 3.45, dpTag: 'NV', pod: 'Adoption', tranche: 'NV' },
+        // Other
+        { name: 'seamless-experience', spend: 19520949, spo: 1.42, dpTag: 'Other', pod: 'Benefits', tranche: '—' },
+        { name: 'Top Mx Contractual', spend: 5400000, spo: 1.92, dpTag: 'Other', pod: 'Partnerships', tranche: '5Y+' },
+        { name: 'Holiday 2024', spend: 4560000, spo: 2.89, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Summer Campaign 2024', spend: 3890000, spo: 2.45, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Super Bowl 2024', spend: 3450000, spo: 4.12, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'Regional - West 2024', spend: 2890000, spo: 2.67, dpTag: 'Other', pod: 'Adoption', tranche: '—' },
+        { name: 'Partner Mx Promo', spend: 2340000, spo: 2.12, dpTag: 'Other', pod: 'Partnerships', tranche: '—' },
+        { name: 'Mothers Day 2024', spend: 1980000, spo: 3.45, dpTag: 'Other', pod: 'Benefits', tranche: 'OOS' },
+        { name: 'General Winback 2024', spend: 1560000, spo: 5.23, dpTag: 'Other', pod: 'Retention', tranche: '—' },
+        { name: 'Engagement Campaign', spend: 1230000, spo: 1.89, dpTag: 'Other', pod: 'Retention', tranche: '—' },
       ],
     };
 
-    const spoByYear = {
-      '2024': [1.64, 1.54, 1.77, 1.78, 1.65, 2.92, 2.70, 1.49, 2.03, 1.76, 2.16, 2.25],
-      '2025': [1.89, 1.94, 2.17, 2.17, 2.86, 3.03, 3.15, 1.97, 2.44, 2.31, 2.39, 2.01],
-      '2026': [1.91, 2.02, 2.11, 1.76, 2.08],
-    };
+    // Compute "All" by combining years
+    allCampaignsByYear['All'] = [...allCampaignsByYear['2024'], ...allCampaignsByYear['2025'], ...allCampaignsByYear['2026']]
+      .reduce((acc, c) => {
+        const existing = acc.find(x => x.name === c.name);
+        if (existing) { existing.spend += c.spend; }
+        else { acc.push({ ...c }); }
+        return acc;
+      }, []).sort((a, b) => b.spend - a.spend);
 
-    // Helpers
-    function formatCurrency(n) {
-      const millions = n / 1e6;
-      return '$' + millions.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'M';
-    }
-
-    function getBadgeClass(tranche) {
-      const map = { 
-        'T1': 'badge-t1', 
-        'T2': 'badge-t2', 
-        'New': 'badge-new', 
-        'NV': 'badge-nv', 
-        '5Y+': 'badge-5y', 
-        'OOS': 'badge-oos',
-        '—': 'badge-none' 
-      };
-      return map[tranche] || 'badge-none';
-    }
-
-    // Tab switching
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-        document.getElementById('tab-' + tab.dataset.tab).classList.remove('hidden');
-      });
-    });
-
-    // Year filter
     let currentYear = '2026';
     let currentType = 'All';
-    
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentYear = btn.dataset.year;
-        renderTop10();
-        renderPodSummary();
-      });
-    });
-    
-    // Type filter for Top 10 campaigns
-    document.querySelectorAll('.type-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentType = btn.dataset.type;
-        renderTop10();
-      });
-    });
+    const podColors = { 'Adoption': '#4318AD', 'Retention': '#5221CF', 'Benefits': '#9069F2', 'Partnerships': '#B89EFB' };
+    const trancheColors = { 'T1': '#4318AD', 'T2': '#5221CF', 'New': '#622EEA', 'NV': '#9069F2', '5Y+': '#c0392b', 'OOS': '#7f8c8d', '—': '#bdc3c7' };
 
-    // Render Pod Summary
-    function renderPodSummary() {
-      const pods = podSpendByYear[currentYear];
-      const podOrder = ['Adoption', 'Retention', 'Benefits', 'Partnerships'];
-      const total = podOrder.reduce((a, pod) => a + pods[pod].total, 0);
-      const totalCore = podOrder.reduce((a, pod) => a + pods[pod].core, 0);
-      const totalNV = podOrder.reduce((a, pod) => a + pods[pod].nv, 0);
-      const totalOther = podOrder.reduce((a, pod) => a + pods[pod].other, 0);
-      const corePct = ((totalCore / total) * 100).toFixed(0);
-      const nvPct = ((totalNV / total) * 100).toFixed(0);
-      const otherPct = ((totalOther / total) * 100).toFixed(0);
-      
-      // Update year label
-      document.getElementById('pod-year-label').textContent = 
-        currentYear === 'All' ? '(All Years)' : currentYear === '2026' ? '(2026 YTD)' : '(' + currentYear + ')';
-      
-      // Render Core vs NV vs Other summary
-      document.getElementById('core-other-summary').innerHTML = `
-        <div style="flex: 1; padding: 16px; background: #EFE8FF; border-radius: 8px; border: 2px solid #622EEA;">
-          <div style="font-size: 12px; color: #666;">Total DD-Funded</div>
-          <div style="font-size: 24px; font-weight: bold; color: #341485;">${formatCurrency(total)}</div>
-          <div style="font-size: 12px; color: #666;">All spend is DoorDash-funded</div>
-        </div>
-        <div style="flex: 1; padding: 16px; background: #F8F5FF; border-radius: 8px; border: 2px solid #4318AD;">
-          <div style="font-size: 12px; color: #666;">Core DashPass (Rx)</div>
-          <div style="font-size: 24px; font-weight: bold; color: #4318AD;">${formatCurrency(totalCore)}</div>
-          <div style="font-size: 12px; color: #666;">${corePct}% — DP-tagged Rx promos</div>
-        </div>
-        <div style="flex: 1; padding: 16px; background: #e8f5e9; border-radius: 8px; border: 2px solid #27ae60;">
-          <div style="font-size: 12px; color: #666;">New Verticals</div>
-          <div style="font-size: 24px; font-weight: bold; color: #27ae60;">${formatCurrency(totalNV)}</div>
-          <div style="font-size: 12px; color: #666;">${nvPct}% — Chase NV, Grocery, etc.</div>
-        </div>
-        <div style="flex: 1; padding: 16px; background: #f5f5f5; border-radius: 8px; border: 1px solid #bdc3c7;">
-          <div style="font-size: 12px; color: #666;">Other</div>
-          <div style="font-size: 24px; font-weight: bold; color: #7f8c8d;">${formatCurrency(totalOther)}</div>
-          <div style="font-size: 12px; color: #666;">${otherPct}% — general promos</div>
-        </div>
-      `;
-      
-      // Render stat cards
-      document.getElementById('pod-summary').innerHTML = podOrder.map(pod => {
-        const data = pods[pod];
-        const pct = ((data.total / total) * 100).toFixed(0);
-        const corePctOfPod = data.total > 0 ? ((data.core / data.total) * 100).toFixed(0) : '0';
-        return `
-          <div style="flex: 1; min-width: 140px; padding: 16px; background: ${podColors[pod]}15; border-left: 4px solid ${podColors[pod]}; border-radius: 4px;">
-            <div style="font-size: 12px; color: #666;">${pod}</div>
-            <div style="font-size: 20px; font-weight: bold; color: ${podColors[pod]};">${formatCurrency(data.total)}</div>
-            <div style="font-size: 14px; color: #666;">${pct}% of total</div>
-            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0;">
-              <div style="font-size: 12px; color: #4318AD;">Core DashPass: ${formatCurrency(data.core)} (${corePctOfPod}%)</div>
-              ${data.nv > 0 ? `<div style="font-size: 12px; color: #27ae60;">NV: ${formatCurrency(data.nv)}</div>` : ''}
-              ${data.other > 0 ? `<div style="font-size: 12px; color: #7f8c8d;">Other: ${formatCurrency(data.other)}</div>` : ''}
-            </div>
-          </div>
-        `;
-      }).join('');
-      
-      // Render stacked bar with Core (colored), NV (green), Other (gray)
-      let barHtml = '';
-      podOrder.forEach(pod => {
-        const data = pods[pod];
-        const corePct = (data.core / total) * 100;
-        const nvPct = (data.nv / total) * 100;
-        const otherPct = (data.other / total) * 100;
-        barHtml += `<div style="width: ${corePct}%; background: ${podColors[pod]};" title="${pod} Core DashPass: ${corePct.toFixed(1)}%"></div>`;
-        if (nvPct > 0) {
-          barHtml += `<div style="width: ${nvPct}%; background: #27ae60;" title="${pod} NV: ${nvPct.toFixed(1)}%"></div>`;
-        }
-        if (otherPct > 0) {
-          barHtml += `<div style="width: ${otherPct}%; background: #bdc3c7;" title="${pod} Other: ${otherPct.toFixed(1)}%"></div>`;
-        }
-      });
-      document.getElementById('pod-bar').innerHTML = barHtml;
+    function formatCurrency(n) {
+      return '$' + (n / 1e6).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'M';
     }
 
-    // Render Top 10 table
+    function getTop10(year, typeFilter) {
+      const data = allCampaignsByYear[year] || allCampaignsByYear['2026'];
+      const filtered = typeFilter === 'All' ? data : data.filter(c => c.dpTag === typeFilter);
+      return filtered.sort((a, b) => b.spend - a.spend).slice(0, 10);
+    }
+
     function renderTop10() {
-      let data = top10ByYear[currentYear];
-      const tbody = document.getElementById('top10-body');
-      const label = document.getElementById('year-label');
-      label.textContent = currentYear === 'All' ? '(All Years)' : currentYear === '2026' ? '(2026 YTD)' : '(' + currentYear + ')';
+      const data = getTop10(currentYear, currentType);
+      const tbody = document.getElementById('top10-table');
+      const yearLabel = currentYear === 'All' ? 'All Years' : currentYear === '2026' ? '2026 YTD' : currentYear;
+      const typeLabel = currentType === 'All' ? '' : ` - ${currentType}`;
       
-      // Filter by type if not "All"
-      if (currentType !== 'All') {
-        const typeMap = { 'Core': 'Core DashPass', 'NV': 'NV', 'Other': 'Other' };
-        data = data.filter(c => c.dpTag === typeMap[currentType]);
-      }
-      
-      // Take top 10 after filtering
-      data = data.slice(0, 10);
-      
-      const dpTagColors = {
-        'Core DashPass': { bg: '#4318AD20', color: '#4318AD' },
-        'NV': { bg: '#27ae6020', color: '#27ae60' },
-        'Other': { bg: '#bdc3c720', color: '#7f8c8d' },
-      };
+      document.getElementById('top10-header').textContent = `Top 10 Campaigns (${yearLabel}${typeLabel})`;
       
       tbody.innerHTML = data.map((c, i) => `
-        <tr style="${i % 2 === 1 ? 'background: #fafafa;' : ''}">
+        <tr style="background: ${i % 2 === 1 ? '#fafafa' : 'white'};">
           <td>${c.name}</td>
-          <td class="text-right">${formatCurrency(c.spend)}</td>
-          <td class="text-right ${c.spo > 4 ? 'text-bad' : c.spo < 2 ? 'text-good' : ''}">$${c.spo.toFixed(2)}</td>
-          <td class="text-center"><span class="badge" style="background: ${dpTagColors[c.dpTag].bg}; color: ${dpTagColors[c.dpTag].color};">${c.dpTag === 'Core DashPass' ? 'Core' : c.dpTag}</span></td>
-          <td class="text-center"><span class="badge" style="background: ${podColors[c.pod]}20; color: ${podColors[c.pod]};">${c.pod}</span></td>
-          <td class="text-center"><span class="badge ${getBadgeClass(c.tranche)}">${c.tranche}</span></td>
+          <td style="text-align: right;">${formatCurrency(c.spend)}</td>
+          <td style="text-align: right; color: ${c.spo > 4 ? '#9069F2' : c.spo < 2 ? '#4318AD' : '#333'};">$${c.spo.toFixed(2)}</td>
+          <td style="text-align: center;"><span class="badge badge-${c.dpTag === 'Core DashPass' ? 'core' : c.dpTag.toLowerCase()}">${c.dpTag}</span></td>
+          <td style="text-align: center;"><span class="badge" style="background: ${podColors[c.pod]}20; color: ${podColors[c.pod]};">${c.pod}</span></td>
+          <td style="text-align: center;"><span class="badge" style="background: ${trancheColors[c.tranche]}20; color: ${trancheColors[c.tranche]};">${c.tranche}</span></td>
         </tr>
       `).join('');
     }
 
-    // Render tranche tables
-    function renderTrancheTable(data, tbodyId) {
-      const tbody = document.getElementById(tbodyId);
-      tbody.innerHTML = data.map((c, i) => `
-        <tr style="${i % 2 === 1 ? 'background: #fafafa;' : ''}">
-          <td>${c.campaign}</td>
-          <td class="text-right">${formatCurrency(c.spend)}</td>
-          <td class="text-right">${c.redemptions.toLocaleString()}</td>
-          <td class="text-right">$${(c.spend / c.redemptions).toFixed(2)}</td>
-          <td>${c.notes || '—'}</td>
-        </tr>
-      `).join('');
+    function showTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+      document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+      document.getElementById('tab-' + tab).classList.remove('hidden');
     }
 
-    // Initialize
-    renderTop10();
-    renderPodSummary();
-    renderTrancheTable(trancheData.tranche1, 'tranche1-body');
-    renderTrancheTable(trancheData.tranche2, 'tranche2-body');
-    renderTrancheTable(trancheData.contractual, 'contractual-body');
+    function setYear(year) {
+      currentYear = year;
+      document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`[onclick="setYear('${year}')"]`).classList.add('active');
+      renderTop10();
+    }
 
-    // Chart
-    const ctx = document.getElementById('yoyChart').getContext('2d');
+    function setTypeFilter(type) {
+      currentType = type;
+      document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`[onclick="setTypeFilter('${type}')"]`).classList.add('active');
+      renderTop10();
+    }
+
+    // SPO Chart
+    const ctx = document.getElementById('spoChart').getContext('2d');
     new Chart(ctx, {
       type: 'line',
       data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
-          {
-            label: '2024',
-            data: spoByYear['2024'],
-            borderColor: '#B89EFB',
-            backgroundColor: 'rgba(184, 158, 251, 0.1)',
-            tension: 0.3,
-          },
-          {
-            label: '2025',
-            data: spoByYear['2025'],
-            borderColor: '#9069F2',
-            backgroundColor: 'rgba(144, 105, 242, 0.1)',
-            tension: 0.3,
-          },
-          {
-            label: '2026 YTD',
-            data: spoByYear['2026'],
-            borderColor: '#4318AD',
-            backgroundColor: 'rgba(67, 24, 173, 0.1)',
-            tension: 0.3,
-          },
-        ],
+          { label: '2024', data: [1.64, 1.54, 1.77, 1.78, 1.65, 2.92, 2.70, 1.49, 2.03, 1.76, 2.16, 2.25], borderColor: '#B89EFB', backgroundColor: '#B89EFB20', tension: 0.3 },
+          { label: '2025', data: [1.89, 1.94, 2.17, 2.17, 2.86, 3.03, 3.15, 1.97, 2.44, 2.31, 2.39, 2.01], borderColor: '#9069F2', backgroundColor: '#9069F220', tension: 0.3 },
+          { label: '2026 YTD', data: [1.91, 2.02, 2.11, 1.76, 2.08], borderColor: '#4318AD', backgroundColor: '#4318AD20', tension: 0.3 },
+        ]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: 'top' },
-        },
-        scales: {
-          y: {
-            beginAtZero: false,
-            title: { display: true, text: '$/Order' },
-          },
-        },
-      },
+        plugins: { legend: { position: 'bottom' } },
+        scales: { y: { title: { display: true, text: '$/Order' } } }
+      }
     });
+
+    renderTop10();
   </script>
 </body>
 </html>
