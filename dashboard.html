@@ -44,12 +44,14 @@
     .pod-card.retention { background: #5221CF15; border-color: #5221CF; }
     .pod-card.benefits { background: #9069F215; border-color: #9069F2; }
     .pod-card.partnerships { background: #B89EFB15; border-color: #B89EFB; }
+    .pod-card.unclassified { background: #95a5a615; border-color: #95a5a6; }
     .pod-label { color: #666; font-size: 12px; }
     .pod-value { font-size: 18px; font-weight: bold; margin: 4px 0; }
     .pod-value.adoption { color: #4318AD; }
     .pod-value.retention { color: #5221CF; }
     .pod-value.benefits { color: #9069F2; }
     .pod-value.partnerships { color: #B89EFB; }
+    .pod-value.unclassified { color: #95a5a6; }
     table { width: 100%; border-collapse: collapse; }
     th { background: #f8f9fa; padding: 12px 16px; text-align: left; font-weight: bold; border-bottom: 2px solid #e0e0e0; font-size: 13px; }
     td { padding: 12px 16px; border-bottom: 1px solid #e0e0e0; font-size: 13px; }
@@ -612,34 +614,39 @@
     const trancheColors = { 'T1': '#4318AD', 'T2': '#5221CF', 'New': '#622EEA', 'NV': '#9069F2', '5Y+': '#c0392b', 'OOS': '#7f8c8d', '—': '#bdc3c7' };
 
     // Pod spend data by year (Core DashPass / NV / Other breakdown)
+    // Includes "Unclassified" for campaigns not matching any of the 4 main pods
     const podSpendByYear = {
       'All': {
         total: 1165400000, core: 775000000, nv: 89000000, other: 301400000,
         Adoption: { total: 285000000, core: 270000000, nv: 0, other: 15000000 },
         Retention: { total: 195000000, core: 175000000, nv: 0, other: 20000000 },
         Benefits: { total: 280000000, core: 275000000, nv: 0, other: 5000000 },
-        Partnerships: { total: 405000000, core: 55000000, nv: 89000000, other: 261000000 },
+        Partnerships: { total: 265000000, core: 55000000, nv: 89000000, other: 121000000 },
+        Unclassified: { total: 140400000, core: 0, nv: 0, other: 140400000 },
       },
       '2024': {
         total: 316900000, core: 242000000, nv: 20500000, other: 54400000,
         Adoption: { total: 95000000, core: 87000000, nv: 0, other: 8000000 },
         Retention: { total: 65000000, core: 60000000, nv: 0, other: 5000000 },
         Benefits: { total: 85000000, core: 83000000, nv: 0, other: 2000000 },
-        Partnerships: { total: 72000000, core: 12000000, nv: 20500000, other: 39500000 },
+        Partnerships: { total: 52000000, core: 12000000, nv: 20500000, other: 19500000 },
+        Unclassified: { total: 19900000, core: 0, nv: 0, other: 19900000 },
       },
       '2025': {
         total: 632000000, core: 470000000, nv: 82800000, other: 79200000,
         Adoption: { total: 125000000, core: 118000000, nv: 0, other: 7000000 },
         Retention: { total: 95000000, core: 80000000, nv: 0, other: 15000000 },
         Benefits: { total: 145000000, core: 142000000, nv: 0, other: 3000000 },
-        Partnerships: { total: 267000000, core: 130000000, nv: 82800000, other: 54200000 },
+        Partnerships: { total: 227000000, core: 130000000, nv: 82800000, other: 14200000 },
+        Unclassified: { total: 40000000, core: 0, nv: 0, other: 40000000 },
       },
       '2026': {
         total: 219400000, core: 63100000, nv: 39900000, other: 116400000,
         Adoption: { total: 55700000, core: 55700000, nv: 0, other: 0 },
         Retention: { total: 17000000, core: 17000000, nv: 0, other: 0 },
         Benefits: { total: 12300000, core: 12300000, nv: 0, other: 0 },
-        Partnerships: { total: 134400000, core: 0, nv: 39900000, other: 94500000 },
+        Partnerships: { total: 47500000, core: 0, nv: 39900000, other: 7600000 },
+        Unclassified: { total: 86900000, core: 0, nv: 0, other: 86900000 },
       },
     };
 
@@ -656,8 +663,9 @@
       const nvPct = Math.round(data.nv / data.total * 100);
       const otherPct = Math.round(data.other / data.total * 100);
       
-      const pods = ['Adoption', 'Retention', 'Benefits', 'Partnerships'];
-      const podClasses = { Adoption: 'adoption', Retention: 'retention', Benefits: 'benefits', Partnerships: 'partnerships' };
+      const pods = ['Adoption', 'Retention', 'Benefits', 'Partnerships', 'Unclassified'];
+      const podClasses = { Adoption: 'adoption', Retention: 'retention', Benefits: 'benefits', Partnerships: 'partnerships', Unclassified: 'unclassified' };
+      const allPodColors = { ...podColors, Unclassified: '#95a5a6' };
       
       let html = `
         <div class="grid-4" style="margin-bottom: 16px;">
@@ -682,7 +690,7 @@
             <div class="stat-note">${otherPct}% — general promos</div>
           </div>
         </div>
-        <div class="grid-4">`;
+        <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">`;
       
       pods.forEach(pod => {
         const podData = data[pod];
@@ -710,7 +718,7 @@
       pods.forEach(pod => {
         const podData = data[pod];
         const pct = (podData.total / data.total * 100).toFixed(1);
-        html += `<div style="width: ${pct}%; background: ${podColors[pod]};" title="${pod} ${pct}%"></div>`;
+        html += `<div style="width: ${pct}%; background: ${allPodColors[pod]};" title="${pod} ${pct}%"></div>`;
       });
       
       html += `</div>
@@ -719,6 +727,7 @@
           <div class="legend-item"><span class="legend-dot" style="background: #5221CF;"></span> Retention</div>
           <div class="legend-item"><span class="legend-dot" style="background: #9069F2;"></span> Benefits</div>
           <div class="legend-item"><span class="legend-dot" style="background: #B89EFB;"></span> Partnerships</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #95a5a6;"></span> Unclassified</div>
         </div>`;
       
       document.getElementById('pod-section').innerHTML = html;
