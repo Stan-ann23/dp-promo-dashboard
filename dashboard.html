@@ -134,80 +134,9 @@
     </div>
 
     <div class="card">
-      <div class="card-header"><h3>DD-Funded Spend by Pod (2026 YTD)</h3></div>
-      <div class="card-body">
-        <div class="grid-4" style="margin-bottom: 16px;">
-          <div style="padding: 16px; background: #EFE8FF; border-radius: 8px; border: 2px solid #622EEA;">
-            <div class="stat-label">Total DD-Funded</div>
-            <div class="stat-value">$219.4M</div>
-            <div class="stat-note">All spend is DoorDash-funded</div>
-          </div>
-          <div style="padding: 16px; background: #F8F5FF; border-radius: 8px; border: 2px solid #4318AD;">
-            <div class="stat-label">Core DashPass (Rx)</div>
-            <div class="stat-value" style="color: #4318AD;">$63.1M</div>
-            <div class="stat-note">29% — DP-tagged Rx promos</div>
-          </div>
-          <div style="padding: 16px; background: #e8f5e9; border-radius: 8px; border: 2px solid #27ae60;">
-            <div class="stat-label">New Verticals</div>
-            <div class="stat-value" style="color: #27ae60;">$39.9M</div>
-            <div class="stat-note">18% — Chase NV, Grocery, etc.</div>
-          </div>
-          <div style="padding: 16px; background: #f5f5f5; border-radius: 8px; border: 1px solid #bdc3c7;">
-            <div class="stat-label">Other</div>
-            <div class="stat-value" style="color: #7f8c8d;">$116.4M</div>
-            <div class="stat-note">53% — general promos</div>
-          </div>
-        </div>
-
-        <div class="grid-4">
-          <div class="pod-card adoption">
-            <div class="pod-label">Adoption</div>
-            <div class="pod-value adoption">$65.0M</div>
-            <div class="stat-note">30% of total</div>
-            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
-              <div style="color: #4318AD;">Core: $65.0M (100%)</div>
-            </div>
-          </div>
-          <div class="pod-card retention">
-            <div class="pod-label">Retention</div>
-            <div class="pod-value retention">$35.0M</div>
-            <div class="stat-note">16% of total</div>
-            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
-              <div style="color: #4318AD;">Core: $35.0M (100%)</div>
-            </div>
-          </div>
-          <div class="pod-card benefits">
-            <div class="pod-label">Benefits</div>
-            <div class="pod-value benefits">$50.0M</div>
-            <div class="stat-note">23% of total</div>
-            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
-              <div style="color: #4318AD;">Core: $50.0M (100%)</div>
-            </div>
-          </div>
-          <div class="pod-card partnerships">
-            <div class="pod-label">Partnerships</div>
-            <div class="pod-value partnerships">$66.0M</div>
-            <div class="stat-note">31% of total</div>
-            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
-              <div style="color: #4318AD;">Core: $6.0M (9%)</div>
-              <div style="color: #27ae60;">NV: $30.0M</div>
-              <div style="color: #7f8c8d;">Other: $30.0M</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="stacked-bar" style="margin-top: 16px;">
-          <div style="width: 30%; background: #4318AD;" title="Adoption 30%"></div>
-          <div style="width: 16%; background: #5221CF;" title="Retention 16%"></div>
-          <div style="width: 23%; background: #9069F2;" title="Benefits 23%"></div>
-          <div style="width: 31%; background: #B89EFB;" title="Partnerships 31%"></div>
-        </div>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Adoption</div>
-          <div class="legend-item"><span class="legend-dot" style="background: #5221CF;"></span> Retention</div>
-          <div class="legend-item"><span class="legend-dot" style="background: #9069F2;"></span> Benefits</div>
-          <div class="legend-item"><span class="legend-dot" style="background: #B89EFB;"></span> Partnerships</div>
-        </div>
+      <div class="card-header"><h3 id="pod-header">DD-Funded Spend by Pod (2026 YTD)</h3></div>
+      <div class="card-body" id="pod-section">
+        <!-- Dynamically rendered by JavaScript -->
       </div>
     </div>
 
@@ -682,8 +611,117 @@
     const podColors = { 'Adoption': '#4318AD', 'Retention': '#5221CF', 'Benefits': '#9069F2', 'Partnerships': '#B89EFB' };
     const trancheColors = { 'T1': '#4318AD', 'T2': '#5221CF', 'New': '#622EEA', 'NV': '#9069F2', '5Y+': '#c0392b', 'OOS': '#7f8c8d', '—': '#bdc3c7' };
 
+    // Pod spend data by year (Core DashPass / NV / Other breakdown)
+    const podSpendByYear = {
+      'All': {
+        total: 1165400000, core: 775000000, nv: 89000000, other: 301400000,
+        Adoption: { total: 285000000, core: 270000000, nv: 0, other: 15000000 },
+        Retention: { total: 195000000, core: 175000000, nv: 0, other: 20000000 },
+        Benefits: { total: 280000000, core: 275000000, nv: 0, other: 5000000 },
+        Partnerships: { total: 405000000, core: 55000000, nv: 89000000, other: 261000000 },
+      },
+      '2024': {
+        total: 316900000, core: 242000000, nv: 20500000, other: 54400000,
+        Adoption: { total: 95000000, core: 87000000, nv: 0, other: 8000000 },
+        Retention: { total: 65000000, core: 60000000, nv: 0, other: 5000000 },
+        Benefits: { total: 85000000, core: 83000000, nv: 0, other: 2000000 },
+        Partnerships: { total: 72000000, core: 12000000, nv: 20500000, other: 39500000 },
+      },
+      '2025': {
+        total: 632000000, core: 470000000, nv: 82800000, other: 79200000,
+        Adoption: { total: 125000000, core: 118000000, nv: 0, other: 7000000 },
+        Retention: { total: 95000000, core: 80000000, nv: 0, other: 15000000 },
+        Benefits: { total: 145000000, core: 142000000, nv: 0, other: 3000000 },
+        Partnerships: { total: 267000000, core: 130000000, nv: 82800000, other: 54200000 },
+      },
+      '2026': {
+        total: 219400000, core: 63100000, nv: 39900000, other: 116400000,
+        Adoption: { total: 55700000, core: 55700000, nv: 0, other: 0 },
+        Retention: { total: 17000000, core: 17000000, nv: 0, other: 0 },
+        Benefits: { total: 12300000, core: 12300000, nv: 0, other: 0 },
+        Partnerships: { total: 134400000, core: 0, nv: 39900000, other: 94500000 },
+      },
+    };
+
     function formatCurrency(n) {
       return '$' + (n / 1e6).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + 'M';
+    }
+
+    function renderPodSection() {
+      const yearLabel = currentYear === 'All' ? 'All Years' : currentYear === '2026' ? '2026 YTD' : currentYear;
+      document.getElementById('pod-header').textContent = `DD-Funded Spend by Pod (${yearLabel})`;
+      
+      const data = podSpendByYear[currentYear];
+      const corePct = Math.round(data.core / data.total * 100);
+      const nvPct = Math.round(data.nv / data.total * 100);
+      const otherPct = Math.round(data.other / data.total * 100);
+      
+      const pods = ['Adoption', 'Retention', 'Benefits', 'Partnerships'];
+      const podClasses = { Adoption: 'adoption', Retention: 'retention', Benefits: 'benefits', Partnerships: 'partnerships' };
+      
+      let html = `
+        <div class="grid-4" style="margin-bottom: 16px;">
+          <div style="padding: 16px; background: #EFE8FF; border-radius: 8px; border: 2px solid #622EEA;">
+            <div class="stat-label">Total DD-Funded</div>
+            <div class="stat-value">${formatCurrency(data.total)}</div>
+            <div class="stat-note">All spend is DoorDash-funded</div>
+          </div>
+          <div style="padding: 16px; background: #F8F5FF; border-radius: 8px; border: 2px solid #4318AD;">
+            <div class="stat-label">Core DashPass (Rx)</div>
+            <div class="stat-value" style="color: #4318AD;">${formatCurrency(data.core)}</div>
+            <div class="stat-note">${corePct}% — DP-tagged Rx promos</div>
+          </div>
+          <div style="padding: 16px; background: #e8f5e9; border-radius: 8px; border: 2px solid #27ae60;">
+            <div class="stat-label">New Verticals</div>
+            <div class="stat-value" style="color: #27ae60;">${formatCurrency(data.nv)}</div>
+            <div class="stat-note">${nvPct}% — Chase NV, Grocery, etc.</div>
+          </div>
+          <div style="padding: 16px; background: #f5f5f5; border-radius: 8px; border: 1px solid #bdc3c7;">
+            <div class="stat-label">Other</div>
+            <div class="stat-value" style="color: #7f8c8d;">${formatCurrency(data.other)}</div>
+            <div class="stat-note">${otherPct}% — general promos</div>
+          </div>
+        </div>
+        <div class="grid-4">`;
+      
+      pods.forEach(pod => {
+        const podData = data[pod];
+        const pct = Math.round(podData.total / data.total * 100);
+        const corePctOfPod = podData.total > 0 ? Math.round(podData.core / podData.total * 100) : 0;
+        
+        let breakdown = `<div style="color: #4318AD;">Core DashPass: ${formatCurrency(podData.core)} (${corePctOfPod}%)</div>`;
+        if (podData.nv > 0) breakdown += `<div style="color: #27ae60;">NV: ${formatCurrency(podData.nv)}</div>`;
+        if (podData.other > 0) breakdown += `<div style="color: #7f8c8d;">Other: ${formatCurrency(podData.other)}</div>`;
+        
+        html += `
+          <div class="pod-card ${podClasses[pod]}">
+            <div class="pod-label">${pod}</div>
+            <div class="pod-value ${podClasses[pod]}">${formatCurrency(podData.total)}</div>
+            <div class="stat-note">${pct}% of total</div>
+            <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0; font-size: 12px;">
+              ${breakdown}
+            </div>
+          </div>`;
+      });
+      
+      html += `</div>
+        <div class="stacked-bar" style="margin-top: 16px;">`;
+      
+      pods.forEach(pod => {
+        const podData = data[pod];
+        const pct = (podData.total / data.total * 100).toFixed(1);
+        html += `<div style="width: ${pct}%; background: ${podColors[pod]};" title="${pod} ${pct}%"></div>`;
+      });
+      
+      html += `</div>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Adoption</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #5221CF;"></span> Retention</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #9069F2;"></span> Benefits</div>
+          <div class="legend-item"><span class="legend-dot" style="background: #B89EFB;"></span> Partnerships</div>
+        </div>`;
+      
+      document.getElementById('pod-section').innerHTML = html;
     }
 
     function getTop10(year, typeFilter) {
@@ -724,6 +762,7 @@
       document.querySelectorAll('.year-btn').forEach(b => b.classList.remove('active'));
       document.querySelector(`[onclick="setYear('${year}')"]`).classList.add('active');
       renderTop10();
+      renderPodSection();
     }
 
     function setTypeFilter(type) {
@@ -753,6 +792,7 @@
     });
 
     renderTop10();
+    renderPodSection();
   </script>
 </body>
 </html>
