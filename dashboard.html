@@ -143,6 +143,23 @@
       color: white;
       border-color: #622EEA;
     }
+    .type-btn {
+      padding: 4px 12px;
+      background: white;
+      color: #666;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .type-btn.active {
+      background: #622EEA;
+      color: white;
+      border-color: #622EEA;
+    }
+    .type-btn:hover {
+      border-color: #622EEA;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -383,7 +400,15 @@
       </div>
 
       <div class="card">
-        <div class="card-header">Top 10 Campaigns <span id="year-label">(2026 YTD)</span></div>
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <span>Top 10 Campaigns <span id="year-label">(2026 YTD)</span></span>
+          <div id="type-filters" style="display: flex; gap: 4px;">
+            <button class="type-btn active" data-type="All">All</button>
+            <button class="type-btn" data-type="Core">Core</button>
+            <button class="type-btn" data-type="NV">NV</button>
+            <button class="type-btn" data-type="Other">Other</button>
+          </div>
+        </div>
         <div class="card-body">
           <table id="top10-table">
             <thead>
@@ -399,7 +424,7 @@
             <tbody id="top10-body"></tbody>
           </table>
           <div class="legend" style="margin-bottom: 8px;">
-            <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Core: DP-tagged Rx promo</div>
+            <div class="legend-item"><span class="legend-dot" style="background: #4318AD;"></span> Core DashPass: DP-tagged Rx promo</div>
             <div class="legend-item"><span class="legend-dot" style="background: #27ae60;"></span> NV: New Verticals</div>
             <div class="legend-item"><span class="legend-dot" style="background: #bdc3c7;"></span> Other: General promo</div>
           </div>
@@ -562,50 +587,50 @@
       'All': [
         { name: 'Chase DashPass NV Launch', spend: 89248156, spo: 2.85, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
         { name: 'seamless-experience', spend: 49959017, spo: 1.45, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'Member Pricing v2B', spend: 41952877, spo: 1.89, tranche: 'New', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'Chase Reserve Restaurant Promo', spend: 37487149, spo: 2.12, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core' },
-        { name: 'DashPass Tokenization', spend: 35576468, spo: 2.34, tranche: '—', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'Welcome Series Automation', spend: 31978106, spo: 2.56, tranche: 'T1', pod: 'Adoption', dpTag: 'Core' },
-        { name: 'OHAR PM3+ Scaled', spend: 19558196, spo: 2.78, tranche: 'T2', pod: 'Retention', dpTag: 'Core' },
+        { name: 'Member Pricing v2B', spend: 41952877, spo: 1.89, tranche: 'New', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 37487149, spo: 2.12, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core DashPass' },
+        { name: 'DashPass Tokenization', spend: 35576468, spo: 2.34, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Welcome Series Automation', spend: 31978106, spo: 2.56, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'OHAR PM3+ Scaled', spend: 19558196, spo: 2.78, tranche: 'T2', pod: 'Retention', dpTag: 'Core DashPass' },
         { name: 'Top Mx Contractual Marketing', spend: 17508349, spo: 1.92, tranche: '5Y+', pod: 'Partnerships', dpTag: 'Other' },
-        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core' },
-        { name: 'Delayed Welcome Bonus MF V3', spend: 16627046, spo: 4.89, tranche: 'T1', pod: 'Adoption', dpTag: 'Core' },
+        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core DashPass' },
+        { name: 'Delayed Welcome Bonus MF V3', spend: 16627046, spo: 4.89, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
       ],
       '2024': [
-        { name: 'Welcome Series Automation', spend: 21747302, spo: 2.34, tranche: 'T1', pod: 'Adoption', dpTag: 'Core' },
+        { name: 'Welcome Series Automation', spend: 21747302, spo: 2.34, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
         { name: 'seamless-experience', spend: 19520949, spo: 1.42, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'SoDP - Monthly', spend: 14070367, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core' },
-        { name: 'DashPass Pricing', spend: 8070281, spo: 1.78, tranche: '—', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'Project Z Intro Offer', spend: 7478782, spo: 2.67, tranche: '—', pod: 'Adoption', dpTag: 'Core' },
-        { name: 'DP Pricing v2', spend: 7354771, spo: 1.65, tranche: '—', pod: 'Benefits', dpTag: 'Core' },
+        { name: 'SoDP - Monthly', spend: 14070367, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core DashPass' },
+        { name: 'DashPass Pricing', spend: 8070281, spo: 1.78, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Project Z Intro Offer', spend: 7478782, spo: 2.67, tranche: '—', pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'DP Pricing v2', spend: 7354771, spo: 1.65, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
         { name: 'Chase DashPass NV Launch', spend: 7310315, spo: 2.67, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'DashPass Daily Deals', spend: 6524715, spo: 4.12, tranche: '—', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'DP Pricing x Mx Premier Package Test', spend: 6077748, spo: 1.67, tranche: '—', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'dashpass automated disaster recovery', spend: 5464692, spo: 3.12, tranche: 'New', pod: 'Retention', dpTag: 'Core' },
+        { name: 'DashPass Daily Deals', spend: 6524715, spo: 4.12, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'DP Pricing x Mx Premier Package Test', spend: 6077748, spo: 1.67, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'dashpass automated disaster recovery', spend: 5464692, spo: 3.12, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
       ],
       '2025': [
         { name: 'Chase DashPass NV Launch', spend: 52214808, spo: 2.78, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'Member Pricing v2B', spend: 40961358, spo: 1.89, tranche: 'New', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'DashPass Tokenization', spend: 32337895, spo: 2.34, tranche: '—', pod: 'Benefits', dpTag: 'Core' },
-        { name: 'Chase Reserve Restaurant Promo', spend: 24132256, spo: 2.15, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core' },
+        { name: 'Member Pricing v2B', spend: 40961358, spo: 1.89, tranche: 'New', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'DashPass Tokenization', spend: 32337895, spo: 2.34, tranche: '—', pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 24132256, spo: 2.15, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core DashPass' },
         { name: 'seamless-experience', spend: 22652433, spo: 1.45, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core' },
+        { name: 'SoDP Monthly', spend: 17310071, spo: 3.45, tranche: '—', pod: 'Retention', dpTag: 'Core DashPass' },
         { name: 'Fall Football Rx Milestones', spend: 13105052, spo: 5.12, tranche: '—', pod: 'Retention', dpTag: 'Other' },
-        { name: 'OHAR PM3+ Scaled', spend: 12725581, spo: 2.89, tranche: 'T2', pod: 'Retention', dpTag: 'Core' },
-        { name: 'Automated Disaster Recovery', spend: 12662147, spo: 2.56, tranche: 'New', pod: 'Retention', dpTag: 'Core' },
+        { name: 'OHAR PM3+ Scaled', spend: 12725581, spo: 2.89, tranche: 'T2', pod: 'Retention', dpTag: 'Core DashPass' },
+        { name: 'Automated Disaster Recovery', spend: 12662147, spo: 2.56, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
         { name: 'Top Mx Contractual Marketing', spend: 12084367, spo: 1.89, tranche: '5Y+', pod: 'Partnerships', dpTag: 'Other' },
       ],
       '2026': [
         { name: 'Chase DashPass NV Launch', spend: 29723033, spo: 2.89, tranche: 'NV', pod: 'Partnerships', dpTag: 'NV' },
-        { name: 'Chase Reserve Restaurant Promo', spend: 13354893, spo: 2.08, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core' },
-        { name: 'SignupAI V1.5 - Monthly FT', spend: 12506950, spo: 3.34, tranche: 'T1', pod: 'Adoption', dpTag: 'Core' },
-        { name: 'SignupAI V1.5 - Monthly DTP', spend: 8476172, spo: 3.12, tranche: 'T1', pod: 'Adoption', dpTag: 'Core' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 13354893, spo: 2.08, tranche: 'OOS', pod: 'Partnerships', dpTag: 'Core DashPass' },
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 12506950, spo: 3.34, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 8476172, spo: 3.12, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
         { name: 'seamless-experience', spend: 7785636, spo: 1.48, tranche: '—', pod: 'Benefits', dpTag: 'Other' },
-        { name: 'Mid Tenure Recharge Scaled', spend: 6869284, spo: 4.56, tranche: 'New', pod: 'Retention', dpTag: 'Core' },
-        { name: 'Delayed Welcome Bonus Trial', spend: 6736489, spo: 4.78, tranche: 'New', pod: 'Adoption', dpTag: 'Core' },
-        { name: 'Delayed Welcome Bonus MF V3', spend: 5373049, spo: 4.92, tranche: 'T1', pod: 'Adoption', dpTag: 'Core' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 6869284, spo: 4.56, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
+        { name: 'Delayed Welcome Bonus Trial', spend: 6736489, spo: 4.78, tranche: 'New', pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'Delayed Welcome Bonus MF V3', spend: 5373049, spo: 4.92, tranche: 'T1', pod: 'Adoption', dpTag: 'Core DashPass' },
         { name: 'Adaptive FMX v2', spend: 5055041, spo: 5.67, tranche: 'T2', pod: 'Adoption', dpTag: 'Other' },
-        { name: 'DashPass Dynamic Support Recovery', spend: 4970598, spo: 2.34, tranche: 'New', pod: 'Retention', dpTag: 'Core' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 4970598, spo: 2.34, tranche: 'New', pod: 'Retention', dpTag: 'Core DashPass' },
       ],
     };
 
@@ -708,6 +733,8 @@
 
     // Year filter
     let currentYear = '2026';
+    let currentType = 'All';
+    
     document.querySelectorAll('.filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -715,6 +742,16 @@
         currentYear = btn.dataset.year;
         renderTop10();
         renderPodSummary();
+      });
+    });
+    
+    // Type filter for Top 10 campaigns
+    document.querySelectorAll('.type-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentType = btn.dataset.type;
+        renderTop10();
       });
     });
 
@@ -769,7 +806,7 @@
             <div style="font-size: 20px; font-weight: bold; color: ${podColors[pod]};">${formatCurrency(data.total)}</div>
             <div style="font-size: 14px; color: #666;">${pct}% of total</div>
             <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e0e0e0;">
-              <div style="font-size: 12px; color: #4318AD;">Core: ${formatCurrency(data.core)} (${corePctOfPod}%)</div>
+              <div style="font-size: 12px; color: #4318AD;">Core DashPass: ${formatCurrency(data.core)} (${corePctOfPod}%)</div>
               ${data.nv > 0 ? `<div style="font-size: 12px; color: #27ae60;">NV: ${formatCurrency(data.nv)}</div>` : ''}
               ${data.other > 0 ? `<div style="font-size: 12px; color: #7f8c8d;">Other: ${formatCurrency(data.other)}</div>` : ''}
             </div>
@@ -784,7 +821,7 @@
         const corePct = (data.core / total) * 100;
         const nvPct = (data.nv / total) * 100;
         const otherPct = (data.other / total) * 100;
-        barHtml += `<div style="width: ${corePct}%; background: ${podColors[pod]};" title="${pod} Core: ${corePct.toFixed(1)}%"></div>`;
+        barHtml += `<div style="width: ${corePct}%; background: ${podColors[pod]};" title="${pod} Core DashPass: ${corePct.toFixed(1)}%"></div>`;
         if (nvPct > 0) {
           barHtml += `<div style="width: ${nvPct}%; background: #27ae60;" title="${pod} NV: ${nvPct.toFixed(1)}%"></div>`;
         }
@@ -797,13 +834,22 @@
 
     // Render Top 10 table
     function renderTop10() {
-      const data = top10ByYear[currentYear];
+      let data = top10ByYear[currentYear];
       const tbody = document.getElementById('top10-body');
       const label = document.getElementById('year-label');
       label.textContent = currentYear === 'All' ? '(All Years)' : currentYear === '2026' ? '(2026 YTD)' : '(' + currentYear + ')';
       
+      // Filter by type if not "All"
+      if (currentType !== 'All') {
+        const typeMap = { 'Core': 'Core DashPass', 'NV': 'NV', 'Other': 'Other' };
+        data = data.filter(c => c.dpTag === typeMap[currentType]);
+      }
+      
+      // Take top 10 after filtering
+      data = data.slice(0, 10);
+      
       const dpTagColors = {
-        'Core': { bg: '#4318AD20', color: '#4318AD' },
+        'Core DashPass': { bg: '#4318AD20', color: '#4318AD' },
         'NV': { bg: '#27ae6020', color: '#27ae60' },
         'Other': { bg: '#bdc3c720', color: '#7f8c8d' },
       };
@@ -813,7 +859,7 @@
           <td>${c.name}</td>
           <td class="text-right">${formatCurrency(c.spend)}</td>
           <td class="text-right ${c.spo > 4 ? 'text-bad' : c.spo < 2 ? 'text-good' : ''}">$${c.spo.toFixed(2)}</td>
-          <td class="text-center"><span class="badge" style="background: ${dpTagColors[c.dpTag].bg}; color: ${dpTagColors[c.dpTag].color};">${c.dpTag}</span></td>
+          <td class="text-center"><span class="badge" style="background: ${dpTagColors[c.dpTag].bg}; color: ${dpTagColors[c.dpTag].color};">${c.dpTag === 'Core DashPass' ? 'Core' : c.dpTag}</span></td>
           <td class="text-center"><span class="badge" style="background: ${podColors[c.pod]}20; color: ${podColors[c.pod]};">${c.pod}</span></td>
           <td class="text-center"><span class="badge ${getBadgeClass(c.tranche)}">${c.tranche}</span></td>
         </tr>
