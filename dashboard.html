@@ -1248,23 +1248,27 @@
         : '<tr><td colspan="4" style="text-align:center; color:#999;">No campaigns</td></tr>';
 
       // Update Top 10 header and table
+      // Use full campaign list (allCampaignsByYear) so we can get top 10 within each type
       const typeLabel = currentTypeFilter === 'All' ? '' : ' (' + (currentTypeFilter === 'Core' ? 'Core DashPass' : currentTypeFilter) + ')';
       document.getElementById('top10-header').textContent = 'Top 10 Promos - ' + yearLabel + typeLabel;
-      const allCampaigns = top10ByYear[currentYear] || top10ByYear['2026'];
-      const campaigns = currentTypeFilter === 'All' ? allCampaigns : allCampaigns.filter(c => {
-        if (currentTypeFilter === 'Core') return c.type === 'Core DashPass';
-        return c.type === currentTypeFilter;
-      });
+      const fullCampaignList = allCampaignsByYear[currentYear] || allCampaignsByYear['2026'];
+      let filteredCampaigns = fullCampaignList;
+      if (currentTypeFilter !== 'All') {
+        const typeMatch = currentTypeFilter === 'Core' ? 'Core DashPass' : currentTypeFilter;
+        filteredCampaigns = fullCampaignList.filter(c => c.dpTag === typeMatch);
+      }
+      const campaigns = filteredCampaigns.sort((a, b) => b.spend - a.spend).slice(0, 10);
       const tbody = document.getElementById('top10-tbody');
       tbody.innerHTML = campaigns.map(c => {
-        const typeColor = c.type === 'Core DashPass' ? '#4318AD' : c.type === 'NV' ? '#27ae60' : '#7f8c8d';
-        const typeBg = c.type === 'Core DashPass' ? '#4318AD20' : c.type === 'NV' ? '#27ae6020' : '#bdc3c720';
+        const dpType = c.dpTag || c.type || 'Broad-based';
+        const typeColor = dpType === 'Core DashPass' ? '#4318AD' : dpType === 'NV' ? '#27ae60' : '#7f8c8d';
+        const typeBg = dpType === 'Core DashPass' ? '#4318AD20' : dpType === 'NV' ? '#27ae6020' : '#bdc3c720';
         const podColor = c.pod === 'Adoption' ? '#4318AD' : c.pod === 'Retention' ? '#5221CF' : c.pod === 'Benefits' ? '#9069F2' : c.pod === 'Partnerships' ? '#B89EFB' : '#666';
         return '<tr>' +
           '<td>' + c.name + '</td>' +
           '<td style="text-align:right">' + formatCurrency(c.spend) + '</td>' +
           '<td style="text-align:right">$' + c.spo.toFixed(2) + '</td>' +
-          '<td style="text-align:center"><span class="badge" style="background:' + typeBg + ';color:' + typeColor + '">' + c.type + '</span></td>' +
+          '<td style="text-align:center"><span class="badge" style="background:' + typeBg + ';color:' + typeColor + '">' + dpType + '</span></td>' +
           '<td style="text-align:center"><span style="color:' + podColor + '">' + c.pod + '</span></td>' +
           '<td style="text-align:center">—</td>' +
           '</tr>';
