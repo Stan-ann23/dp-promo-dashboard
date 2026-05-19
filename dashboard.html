@@ -846,6 +846,16 @@
       'All': { core: 353000000, nv: 123100000, other: 643470146 }
     };
 
+    // Type spend by OF (2026 only) - from canvas typeByOFByYear['2026']
+    const typeByOF = {
+      'All': { core: 68700000, nv: 34300000, other: 86700000 },
+      '≤1/mo': { core: 12817010, nv: 5128083, other: 16394532 },
+      '1-2/mo': { core: 6770901, nv: 5552446, other: 11124526 },
+      '2-5/mo': { core: 11504632, nv: 11134417, other: 22997334 },
+      '5-10/mo': { core: 8778373, nv: 6333222, other: 22005457 },
+      '10+/mo': { core: 9236158, nv: 6007206, other: 33371593 }
+    };
+
     // Pod spend by OF (2026 only) - from canvas podByOFByYear['2026']
     const podByOF = {
       '≤1/mo': { adoption: 11690655, retention: 847757, benefits: 928503, partnerships: 6795746, unclassified: 14076963 },
@@ -1172,17 +1182,20 @@
       // Update total spend
       document.getElementById('total-spend').textContent = formatCurrency(total);
 
-      // Update Type breakdown (only when OF is 'All' - Type data not available by OF)
-      if (currentOF === 'All') {
-        const types = typeByYear[currentYear] || typeByYear['2026'];
-        const typeTotal = types.core + types.nv + types.other;
-        const corePct = (types.core / typeTotal * 100).toFixed(0);
-        const nvPct = (types.nv / typeTotal * 100).toFixed(0);
-        const otherPct = (types.other / typeTotal * 100).toFixed(0);
-        document.getElementById('type-core').textContent = formatCurrency(types.core);
-        document.getElementById('type-nv').textContent = formatCurrency(types.nv);
-        document.getElementById('type-broad').textContent = formatCurrency(types.other);
+      // Update Type breakdown - use OF-specific data when OF filter selected (2026 only)
+      let types;
+      if (currentOF !== 'All' && currentYear === '2026') {
+        types = typeByOF[currentOF] || typeByOF['All'];
+      } else {
+        types = typeByYear[currentYear] || typeByYear['2026'];
       }
+      const typeTotal = types.core + types.nv + types.other;
+      const corePct = (types.core / typeTotal * 100).toFixed(0);
+      const nvPct = (types.nv / typeTotal * 100).toFixed(0);
+      const otherPct = (types.other / typeTotal * 100).toFixed(0);
+      document.getElementById('type-core').textContent = formatCurrency(types.core);
+      document.getElementById('type-nv').textContent = formatCurrency(types.nv);
+      document.getElementById('type-broad').textContent = formatCurrency(types.other);
 
       // Show OF filter notice
       const ofNoticeSection = document.getElementById('of-filter-notice');
