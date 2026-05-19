@@ -336,7 +336,7 @@
             <h4 style="color: #4318AD; margin-bottom: 12px;">Adoption</h4>
             <table>
               <thead><tr><th>Campaign</th><th style="text-align:right">Spend</th></tr></thead>
-              <tbody>
+              <tbody id="adoption-campaigns">
                 <tr><td>SignupAI V1.5 - Monthly FT</td><td style="text-align:right">$10.2M</td></tr>
                 <tr><td>SignupAI V1.5 - Monthly DTP</td><td style="text-align:right">$7.1M</td></tr>
                 <tr><td>Delayed Welcome Bonus in Trial</td><td style="text-align:right">$5.7M</td></tr>
@@ -352,7 +352,7 @@
             <h4 style="color: #B89EFB; margin-bottom: 12px;">Partnerships</h4>
             <table>
               <thead><tr><th>Campaign</th><th style="text-align:right">Spend</th></tr></thead>
-              <tbody>
+              <tbody id="partnerships-campaigns">
                 <tr><td>Chase DashPass NV Launch</td><td style="text-align:right">$26.0M</td></tr>
                 <tr><td>Chase Reserve Restaurant Promo</td><td style="text-align:right">$11.3M</td></tr>
                 <tr><td>Top Mx Contractual Marketing</td><td style="text-align:right">$3.0M</td></tr>
@@ -363,7 +363,7 @@
             <h4 style="color: #5221CF; margin-bottom: 12px;">Retention</h4>
             <table>
               <thead><tr><th>Campaign</th><th style="text-align:right">Spend</th></tr></thead>
-              <tbody>
+              <tbody id="retention-campaigns">
                 <tr><td>Mid Tenure Recharge Scaled</td><td style="text-align:right">$6.3M</td></tr>
                 <tr><td>DashPass Dynamic Support Recovery</td><td style="text-align:right">$4.9M</td></tr>
                 <tr><td>OHAR PM3+ Scaled</td><td style="text-align:right">$4.5M</td></tr>
@@ -374,7 +374,7 @@
             <h4 style="color: #9069F2; margin-bottom: 12px;">Benefits</h4>
             <table>
               <thead><tr><th>Campaign</th><th style="text-align:right">Spend</th></tr></thead>
-              <tbody>
+              <tbody id="benefits-campaigns">
                 <tr><td>Gift Card Evergreen DashPass</td><td style="text-align:right">$2.8M</td></tr>
               </tbody>
             </table>
@@ -896,6 +896,74 @@
       ],
     };
 
+    // Campaign data by OF bucket (2026 YTD) - for Top Campaigns by Pod section
+    const campaignsByOF = {
+      'All': [
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 10200000, pod: 'Adoption' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 7100000, pod: 'Adoption' },
+        { name: 'Delayed Welcome Bonus in Trial', spend: 5700000, pod: 'Adoption' },
+        { name: 'Adaptive FMX v2', spend: 4800000, pod: 'Adoption' },
+        { name: 'Delayed Welcome Bonus MF V3', spend: 4700000, pod: 'Adoption' },
+        { name: 'Chase DashPass NV Launch', spend: 26000000, pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 11300000, pod: 'Partnerships' },
+        { name: 'Top Mx Contractual Marketing', spend: 3000000, pod: 'Partnerships' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 6300000, pod: 'Retention' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 4900000, pod: 'Retention' },
+        { name: 'OHAR PM3+ Scaled', spend: 4500000, pod: 'Retention' },
+        { name: 'Gift Card Evergreen DashPass', spend: 2800000, pod: 'Benefits' },
+      ],
+      '≤1/mo': [
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 5685351, pod: 'Adoption' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 2424221, pod: 'Adoption' },
+        { name: 'Non Purchaser Welcome Series', spend: 1639581, pod: 'Adoption' },
+        { name: 'Chase DashPass NV Launch', spend: 4552862, pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 1839089, pod: 'Partnerships' },
+        { name: 'OHAR PM3+ Scaled', spend: 806906, pod: 'Retention' },
+        { name: 'Gift Card Evergreen DashPass', spend: 907634, pod: 'Benefits' },
+      ],
+      '1-2/mo': [
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 1975525, pod: 'Adoption' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 1515454, pod: 'Adoption' },
+        { name: 'Delayed Welcome Bonus in Trial', spend: 866215, pod: 'Adoption' },
+        { name: 'Adaptive FMX v2', spend: 530358, pod: 'Adoption' },
+        { name: 'Chase DashPass NV Launch', spend: 4587692, pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 2097039, pod: 'Partnerships' },
+        { name: 'OHAR PM3+ Scaled', spend: 921500, pod: 'Retention' },
+      ],
+      '2-5/mo': [
+        { name: 'Delayed Welcome Bonus in Trial', spend: 2459502, pod: 'Adoption' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 1940581, pod: 'Adoption' },
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 1786821, pod: 'Adoption' },
+        { name: 'Adaptive FMX v2', spend: 1181792, pod: 'Adoption' },
+        { name: 'Chase DashPass NV Launch', spend: 8866785, pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 4098768, pod: 'Partnerships' },
+        { name: 'OHAR PM3+ Scaled', spend: 1868403, pod: 'Retention' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 951771, pod: 'Retention' },
+        { name: 'Gift Card Evergreen DashPass', spend: 757604, pod: 'Benefits' },
+      ],
+      '5-10/mo': [
+        { name: 'Delayed Welcome Bonus MF V3', spend: 1629382, pod: 'Adoption' },
+        { name: 'Delayed Welcome Bonus in Trial', spend: 1497621, pod: 'Adoption' },
+        { name: 'Adaptive FMX v2', spend: 1190915, pod: 'Adoption' },
+        { name: 'Chase DashPass NV Launch', spend: 4325464, pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 2015921, pod: 'Partnerships' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 2602930, pod: 'Retention' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 1266394, pod: 'Retention' },
+        { name: 'Gift Card Evergreen DashPass', spend: 524817, pod: 'Benefits' },
+      ],
+      '10+/mo': [
+        { name: 'Delayed Welcome Bonus MF V3', spend: 2426514, pod: 'Adoption' },
+        { name: 'Adaptive FMX v2', spend: 1492284, pod: 'Adoption' },
+        { name: 'Delayed Welcome Bonus in Trial', spend: 804946, pod: 'Adoption' },
+        { name: 'Chase DashPass NV Launch', spend: 3715395, pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 1199489, pod: 'Partnerships' },
+        { name: 'Top Mx Contractual Marketing', spend: 1165992, pod: 'Partnerships' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 2835524, pod: 'Retention' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 2668674, pod: 'Retention' },
+        { name: 'Member Pricing v2B', spend: 447745, pod: 'Benefits' },
+      ],
+    };
+
     function formatCurrency(val) {
       if (val >= 1e9) return '$' + (val / 1e9).toFixed(1) + 'B';
       if (val >= 1e6) return '$' + (val / 1e6).toFixed(1) + 'M';
@@ -1056,6 +1124,39 @@
       } else {
         campaignsNotice.style.display = 'none';
       }
+
+      // Update Top Campaigns by Pod tables based on OF filter (only 2026 data available)
+      const ofKey = (currentYear === '2026' && currentOF !== 'All') ? currentOF : 'All';
+      const podCampaignsData = campaignsByOF[ofKey] || campaignsByOF['All'];
+      
+      // Helper to get campaigns for a pod
+      const getCampaignsForPod = (pod, limit) => {
+        return podCampaignsData.filter(c => c.pod === pod).slice(0, limit);
+      };
+      
+      // Update Adoption campaigns
+      const adoptionCampaigns = getCampaignsForPod('Adoption', 5);
+      document.getElementById('adoption-campaigns').innerHTML = adoptionCampaigns.length > 0 
+        ? adoptionCampaigns.map(c => '<tr><td>' + c.name + '</td><td style="text-align:right">' + formatCurrency(c.spend) + '</td></tr>').join('')
+        : '<tr><td colspan="2" style="text-align:center; color:#999;">No campaigns</td></tr>';
+      
+      // Update Partnerships campaigns
+      const partnershipsCampaigns = getCampaignsForPod('Partnerships', 5);
+      document.getElementById('partnerships-campaigns').innerHTML = partnershipsCampaigns.length > 0
+        ? partnershipsCampaigns.map(c => '<tr><td>' + c.name + '</td><td style="text-align:right">' + formatCurrency(c.spend) + '</td></tr>').join('')
+        : '<tr><td colspan="2" style="text-align:center; color:#999;">No campaigns</td></tr>';
+      
+      // Update Retention campaigns
+      const retentionCampaigns = getCampaignsForPod('Retention', 5);
+      document.getElementById('retention-campaigns').innerHTML = retentionCampaigns.length > 0
+        ? retentionCampaigns.map(c => '<tr><td>' + c.name + '</td><td style="text-align:right">' + formatCurrency(c.spend) + '</td></tr>').join('')
+        : '<tr><td colspan="2" style="text-align:center; color:#999;">No campaigns</td></tr>';
+      
+      // Update Benefits campaigns
+      const benefitsCampaigns = getCampaignsForPod('Benefits', 5);
+      document.getElementById('benefits-campaigns').innerHTML = benefitsCampaigns.length > 0
+        ? benefitsCampaigns.map(c => '<tr><td>' + c.name + '</td><td style="text-align:right">' + formatCurrency(c.spend) + '</td></tr>').join('')
+        : '<tr><td colspan="2" style="text-align:center; color:#999;">No campaigns</td></tr>';
 
       // Update Top 10 header and table
       const typeLabel = currentTypeFilter === 'All' ? '' : ' (' + (currentTypeFilter === 'Core' ? 'Core DashPass' : currentTypeFilter) + ')';
