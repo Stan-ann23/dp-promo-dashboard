@@ -280,7 +280,7 @@
     <!-- Top 10 Campaigns -->
     <div class="card">
       <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-        <h3>Top 10 (YTD)</h3>
+        <h3 id="top10-header">Top 10 Promos - 2026 YTD</h3>
         <div style="display: flex; gap: 4px;">
           <button class="filter-btn type-filter active" onclick="setTypeFilter('All')">All</button>
           <button class="filter-btn type-filter" onclick="setTypeFilter('Core')">Core</button>
@@ -855,6 +855,46 @@
       '10+/mo': { adoption: 7800000, retention: 2900000, benefits: 900000, partnerships: 10200000, unclassified: 26800000 }
     };
 
+    // Top 10 campaigns by year
+    const top10ByYear = {
+      '2026': [
+        { name: 'Chase DashPass NV Launch', spend: 26000000, spo: 9.83, type: 'NV', pod: 'Partnerships' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 11300000, spo: 5.00, type: 'Broad-based', pod: 'Partnerships' },
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 10200000, spo: 11.32, type: 'Core DashPass', pod: 'Adoption' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 7100000, spo: 10.53, type: 'Core DashPass', pod: 'Adoption' },
+        { name: 'seamless-experience', spend: 6800000, spo: 2.99, type: 'Broad-based', pod: 'Other' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 6300000, spo: 9.95, type: 'Broad-based', pod: 'Retention' },
+        { name: 'Delayed Welcome Bonus in Trial', spend: 5700000, spo: 23.20, type: 'Core DashPass', pod: 'Adoption' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 4900000, spo: 6.42, type: 'Core DashPass', pod: 'Retention' },
+        { name: 'Adaptive FMX v2', spend: 4800000, spo: 5.88, type: 'Broad-based', pod: 'Adoption' },
+        { name: 'Delayed Welcome Bonus MF V3', spend: 4700000, spo: 25.00, type: 'Core DashPass', pod: 'Adoption' },
+      ],
+      '2025': [
+        { name: 'Chase DashPass NV Launch', spend: 51900000, spo: 9.91, type: 'NV', pod: 'Partnerships' },
+        { name: 'Member Pricing v2B', spend: 40800000, spo: 2.96, type: 'Core DashPass', pod: 'Benefits' },
+        { name: 'DashPass Tokenization', spend: 32000000, spo: 5.78, type: 'Core DashPass', pod: 'Benefits' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 24000000, spo: 5.00, type: 'Broad-based', pod: 'Partnerships' },
+        { name: 'seamless-experience', spend: 22400000, spo: 2.99, type: 'Broad-based', pod: 'Other' },
+        { name: 'SoDP Monthly', spend: 17200000, spo: 13.04, type: 'Core DashPass', pod: 'Benefits' },
+        { name: 'Fall Football Rx Milestones', spend: 13100000, spo: 15.68, type: 'Broad-based', pod: 'Other' },
+        { name: 'OHAR PM3+ Scaled', spend: 12600000, spo: 6.04, type: 'Broad-based', pod: 'Retention' },
+        { name: 'Automated Disaster Recovery', spend: 12600000, spo: 9.36, type: 'Broad-based', pod: 'Retention' },
+        { name: 'Top Mx Contractual Marketing', spend: 12000000, spo: 6.75, type: 'Broad-based', pod: 'Partnerships' },
+      ],
+      '2024': [
+        { name: 'seamless-experience', spend: 25800000, spo: 1.45, type: 'Broad-based', pod: 'Other' },
+        { name: 'Member Pricing v2B', spend: 23100000, spo: 1.89, type: 'Core DashPass', pod: 'Benefits' },
+        { name: 'DashPass Credits Refresh', spend: 18500000, spo: 3.24, type: 'Core DashPass', pod: 'Benefits' },
+        { name: 'Top Mx Contractual Marketing', spend: 15200000, spo: 1.92, type: 'Broad-based', pod: 'Partnerships' },
+        { name: 'Integrated Offers - Monthly FT', spend: 12800000, spo: 12.07, type: 'Broad-based', pod: 'Other' },
+        { name: 'OHAR PM2 Welcome', spend: 11400000, spo: 5.86, type: 'Core DashPass', pod: 'Adoption' },
+        { name: 'Integrated Offers - Monthly DTP', spend: 10900000, spo: 12.08, type: 'Broad-based', pod: 'Other' },
+        { name: 'Q4 Holiday Promos', spend: 9800000, spo: 8.45, type: 'Broad-based', pod: 'Other' },
+        { name: 'Adaptive FMX v1', spend: 8700000, spo: 4.92, type: 'Broad-based', pod: 'Adoption' },
+        { name: 'Welcome Series Automation', spend: 7900000, spo: 4.81, type: 'Core DashPass', pod: 'Adoption' },
+      ],
+    };
+
     function formatCurrency(val) {
       if (val >= 1e9) return '$' + (val / 1e9).toFixed(1) + 'B';
       if (val >= 1e6) return '$' + (val / 1e6).toFixed(1) + 'M';
@@ -1018,6 +1058,24 @@
       } else {
         campaignsNotice.style.display = 'none';
       }
+
+      // Update Top 10 header and table
+      document.getElementById('top10-header').textContent = 'Top 10 Promos - ' + yearLabel;
+      const campaigns = top10ByYear[currentYear] || top10ByYear['2026'];
+      const tbody = document.getElementById('top10-tbody');
+      tbody.innerHTML = campaigns.map(c => {
+        const typeColor = c.type === 'Core DashPass' ? '#4318AD' : c.type === 'NV' ? '#27ae60' : '#7f8c8d';
+        const typeBg = c.type === 'Core DashPass' ? '#4318AD20' : c.type === 'NV' ? '#27ae6020' : '#bdc3c720';
+        const podColor = c.pod === 'Adoption' ? '#4318AD' : c.pod === 'Retention' ? '#5221CF' : c.pod === 'Benefits' ? '#9069F2' : c.pod === 'Partnerships' ? '#B89EFB' : '#666';
+        return '<tr>' +
+          '<td>' + c.name + '</td>' +
+          '<td style="text-align:right">' + formatCurrency(c.spend) + '</td>' +
+          '<td style="text-align:right">$' + c.spo.toFixed(2) + '</td>' +
+          '<td style="text-align:center"><span class="badge" style="background:' + typeBg + ';color:' + typeColor + '">' + c.type + '</span></td>' +
+          '<td style="text-align:center"><span style="color:' + podColor + '">' + c.pod + '</span></td>' +
+          '<td style="text-align:center">—</td>' +
+          '</tr>';
+      }).join('');
     }
 
     // Chart
