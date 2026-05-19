@@ -1030,12 +1030,8 @@
       document.getElementById('bar-partnerships').style.width = pctPartnerships + '%';
       document.getElementById('bar-unclassified').style.width = pctUnclassified + '%';
 
-      // Update legend
-      document.getElementById('legend-adoption').textContent = 'Adoption (' + pctAdoption + '%)';
-      document.getElementById('legend-retention').textContent = 'Retention (' + pctRetention + '%)';
-      document.getElementById('legend-benefits').textContent = 'Benefits (' + pctBenefits + '%)';
-      document.getElementById('legend-partnerships').textContent = 'Partnerships (' + pctPartnerships + '%)';
-      document.getElementById('legend-unclassified').textContent = 'Unclassified (' + pctUnclassified + '%)';
+      // Update total spend
+      document.getElementById('total-spend').textContent = formatCurrency(total);
 
       // Show OF filter notice
       const ofNoticeSection = document.getElementById('of-filter-notice');
