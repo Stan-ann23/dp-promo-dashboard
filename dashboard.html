@@ -173,49 +173,54 @@
     </div>
 
     <div class="card">
-      <div class="card-header">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h3 id="pod-header">DD-Funded Spend by Pod (2026 YTD)</h3>
+        <span id="of-filter-badge" class="badge badge-violet" style="display: none;"></span>
       </div>
       <div class="card-body">
-        <div class="stacked-bar" id="pod-bar">
-          <div class="bar-segment" style="width: 25%; background: #4318AD;" title="Adoption: 25%"></div>
-          <div class="bar-segment" style="width: 8%; background: #5221CF;" title="Retention: 8%"></div>
-          <div class="bar-segment" style="width: 2%; background: #9069F2;" title="Benefits: 2%"></div>
-          <div class="bar-segment" style="width: 21%; background: #B89EFB;" title="Partnerships: 21%"></div>
-          <div class="bar-segment" style="width: 44%; background: #D5C4FF;" title="Unclassified: 44%"></div>
+        <div id="of-filter-notice" class="notice-purple notice" style="display: none; margin-bottom: 16px;">
+          <p id="of-filter-text"></p>
         </div>
-        <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#4318AD"></div>Adoption (25%)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#5221CF"></div>Retention (8%)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#9069F2"></div>Benefits (2%)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#B89EFB"></div>Partnerships (21%)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#D5C4FF"></div>Unclassified (44%)</div>
+        <div class="stacked-bar" id="pod-bar">
+          <div id="bar-adoption" class="bar-segment" style="width: 25%; background: #4318AD;" title="Adoption: 25%"></div>
+          <div id="bar-retention" class="bar-segment" style="width: 8%; background: #5221CF;" title="Retention: 8%"></div>
+          <div id="bar-benefits" class="bar-segment" style="width: 2%; background: #9069F2;" title="Benefits: 2%"></div>
+          <div id="bar-partnerships" class="bar-segment" style="width: 21%; background: #B89EFB;" title="Partnerships: 21%"></div>
+          <div id="bar-unclassified" class="bar-segment" style="width: 44%; background: #D5C4FF;" title="Unclassified: 44%"></div>
+        </div>
+        <div class="legend" id="pod-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#4318AD"></div><span id="legend-adoption">Adoption (25%)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#5221CF"></div><span id="legend-retention">Retention (8%)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#9069F2"></div><span id="legend-benefits">Benefits (2%)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#B89EFB"></div><span id="legend-partnerships">Partnerships (21%)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#D5C4FF"></div><span id="legend-unclassified">Unclassified (44%)</span></div>
         </div>
         <div class="grid-5" style="margin-top: 20px;">
           <div class="pod-card adoption">
             <div class="pod-label">Adoption</div>
             <div class="pod-value adoption" id="pod-adoption">$47.4M</div>
+            <div class="pod-desc" id="pod-adoption-pct">25% of total</div>
             <div class="pod-desc">Welcome, signup, trial conversion</div>
           </div>
           <div class="pod-card retention">
             <div class="pod-label">Retention</div>
             <div class="pod-value retention" id="pod-retention">$15.7M</div>
-            <div class="pod-desc">Recharge, OHAR, winback</div>
+            <div class="pod-desc" id="pod-retention-pct">8% of total</div>
           </div>
           <div class="pod-card benefits">
             <div class="pod-label">Benefits</div>
             <div class="pod-value benefits" id="pod-benefits">$3.5M</div>
-            <div class="pod-desc">Member pricing, credits, perks</div>
+            <div class="pod-desc" id="pod-benefits-pct">2% of total</div>
           </div>
           <div class="pod-card partnerships">
             <div class="pod-label">Partnerships</div>
             <div class="pod-value partnerships" id="pod-partnerships">$40.3M</div>
-            <div class="pod-desc">Chase, Lyft, contractual</div>
+            <div class="pod-desc" id="pod-partnerships-pct">21% of total</div>
           </div>
           <div class="pod-card unclassified">
             <div class="pod-label">Unclassified</div>
             <div class="pod-value unclassified" id="pod-unclassified">$82.8M</div>
-            <div class="pod-desc">Seasonal, regional, merchant promos</div>
+            <div class="pod-desc" id="pod-unclassified-pct">44% of total</div>
           </div>
         </div>
       </div>
@@ -906,11 +911,53 @@
       } else {
         pods = podByYear[currentYear];
       }
+      const total = pods.adoption + pods.retention + pods.benefits + pods.partnerships + pods.unclassified;
+      const pctAdoption = (pods.adoption / total * 100).toFixed(0);
+      const pctRetention = (pods.retention / total * 100).toFixed(0);
+      const pctBenefits = (pods.benefits / total * 100).toFixed(0);
+      const pctPartnerships = (pods.partnerships / total * 100).toFixed(0);
+      const pctUnclassified = (pods.unclassified / total * 100).toFixed(0);
+
+      // Update pod values
       document.getElementById('pod-adoption').textContent = formatCurrency(pods.adoption);
       document.getElementById('pod-retention').textContent = formatCurrency(pods.retention);
       document.getElementById('pod-benefits').textContent = formatCurrency(pods.benefits);
       document.getElementById('pod-partnerships').textContent = formatCurrency(pods.partnerships);
       document.getElementById('pod-unclassified').textContent = formatCurrency(pods.unclassified);
+
+      // Update pod percentages
+      document.getElementById('pod-adoption-pct').textContent = pctAdoption + '% of total';
+      document.getElementById('pod-retention-pct').textContent = pctRetention + '% of total';
+      document.getElementById('pod-benefits-pct').textContent = pctBenefits + '% of total';
+      document.getElementById('pod-partnerships-pct').textContent = pctPartnerships + '% of total';
+      document.getElementById('pod-unclassified-pct').textContent = pctUnclassified + '% of total';
+
+      // Update stacked bar
+      document.getElementById('bar-adoption').style.width = pctAdoption + '%';
+      document.getElementById('bar-retention').style.width = pctRetention + '%';
+      document.getElementById('bar-benefits').style.width = pctBenefits + '%';
+      document.getElementById('bar-partnerships').style.width = pctPartnerships + '%';
+      document.getElementById('bar-unclassified').style.width = pctUnclassified + '%';
+
+      // Update legend
+      document.getElementById('legend-adoption').textContent = 'Adoption (' + pctAdoption + '%)';
+      document.getElementById('legend-retention').textContent = 'Retention (' + pctRetention + '%)';
+      document.getElementById('legend-benefits').textContent = 'Benefits (' + pctBenefits + '%)';
+      document.getElementById('legend-partnerships').textContent = 'Partnerships (' + pctPartnerships + '%)';
+      document.getElementById('legend-unclassified').textContent = 'Unclassified (' + pctUnclassified + '%)';
+
+      // Show OF filter notice
+      const ofNoticeSection = document.getElementById('of-filter-notice');
+      const ofBadgeSection = document.getElementById('of-filter-badge');
+      if (currentOF !== 'All') {
+        ofNoticeSection.style.display = 'block';
+        document.getElementById('of-filter-text').innerHTML = 'Showing spend for <strong>' + currentOF + '</strong> users only (' + formatCurrency(total) + ' total)';
+        ofBadgeSection.style.display = 'inline';
+        ofBadgeSection.textContent = currentOF + ' users';
+      } else {
+        ofNoticeSection.style.display = 'none';
+        ofBadgeSection.style.display = 'none';
+      }
 
       // Update campaigns header
       document.getElementById('campaigns-header').textContent = 'Top Campaigns by Pod (' + yearLabel + ofLabel + ')';
