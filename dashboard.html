@@ -221,6 +221,41 @@
       </div>
     </div>
 
+    <!-- Top 10 Campaigns -->
+    <div class="card">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3>Top 10 (YTD)</h3>
+        <div style="display: flex; gap: 4px;">
+          <button class="filter-btn type-filter active" onclick="setTypeFilter('All')">All</button>
+          <button class="filter-btn type-filter" onclick="setTypeFilter('Core')">Core</button>
+          <button class="filter-btn type-filter" onclick="setTypeFilter('NV')">NV</button>
+          <button class="filter-btn type-filter" onclick="setTypeFilter('Broad-based')">Broad-based</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <table>
+          <thead>
+            <tr><th>Campaign</th><th style="text-align:right">Spend</th><th style="text-align:right">$/Order</th><th style="text-align:center">Type</th><th style="text-align:center">Pod</th><th style="text-align:center">Tranche</th></tr>
+          </thead>
+          <tbody id="top10-tbody">
+            <tr><td>Chase DashPass NV Launch</td><td style="text-align:right">$26.0M</td><td style="text-align:right">$9.83</td><td style="text-align:center"><span class="badge" style="background:#27ae6020;color:#27ae60">NV</span></td><td style="text-align:center"><span style="color:#B89EFB">Partnerships</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>Chase Reserve Restaurant Promo</td><td style="text-align:right">$11.3M</td><td style="text-align:right">$5.00</td><td style="text-align:center"><span class="badge" style="background:#bdc3c720;color:#7f8c8d">Broad-based</span></td><td style="text-align:center"><span style="color:#B89EFB">Partnerships</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>SignupAI V1.5 - Monthly FT</td><td style="text-align:right">$10.2M</td><td style="text-align:right">$11.32</td><td style="text-align:center"><span class="badge" style="background:#4318AD20;color:#4318AD">Core DashPass</span></td><td style="text-align:center"><span style="color:#4318AD">Adoption</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>SignupAI V1.5 - Monthly DTP</td><td style="text-align:right">$7.1M</td><td style="text-align:right">$10.53</td><td style="text-align:center"><span class="badge" style="background:#4318AD20;color:#4318AD">Core DashPass</span></td><td style="text-align:center"><span style="color:#4318AD">Adoption</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>seamless-experience</td><td style="text-align:right">$6.8M</td><td style="text-align:right">$2.99</td><td style="text-align:center"><span class="badge" style="background:#bdc3c720;color:#7f8c8d">Broad-based</span></td><td style="text-align:center"><span style="color:#666">Other</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>Mid Tenure Recharge Scaled</td><td style="text-align:right">$6.3M</td><td style="text-align:right">$9.95</td><td style="text-align:center"><span class="badge" style="background:#bdc3c720;color:#7f8c8d">Broad-based</span></td><td style="text-align:center"><span style="color:#5221CF">Retention</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>Delayed Welcome Bonus in Trial Scaled</td><td style="text-align:right">$5.7M</td><td style="text-align:right">$23.20</td><td style="text-align:center"><span class="badge" style="background:#4318AD20;color:#4318AD">Core DashPass</span></td><td style="text-align:center"><span style="color:#4318AD">Adoption</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>DashPass Dynamic Support Recovery</td><td style="text-align:right">$4.9M</td><td style="text-align:right">$6.42</td><td style="text-align:center"><span class="badge" style="background:#4318AD20;color:#4318AD">Core DashPass</span></td><td style="text-align:center"><span style="color:#5221CF">Retention</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>Adaptive FMX v2</td><td style="text-align:right">$4.8M</td><td style="text-align:right">$5.88</td><td style="text-align:center"><span class="badge" style="background:#bdc3c720;color:#7f8c8d">Broad-based</span></td><td style="text-align:center"><span style="color:#4318AD">Adoption</span></td><td style="text-align:center">—</td></tr>
+            <tr><td>Delayed Welcome Bonus MF V3 Scaled</td><td style="text-align:right">$4.7M</td><td style="text-align:right">$25.00</td><td style="text-align:center"><span class="badge" style="background:#4318AD20;color:#4318AD">Core DashPass</span></td><td style="text-align:center"><span style="color:#4318AD">Adoption</span></td><td style="text-align:center">—</td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 12px; font-size: 11px; color: #666;">
+          <strong>Type:</strong> <span style="display: inline-flex; align-items: center; gap: 4px; margin-left: 8px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #4318AD;"></span> Core DashPass: DP-tagged Rx promo</span>
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <div class="card-header">
         <h3>$/Order by Month — Y/Y Comparison</h3>
@@ -790,6 +825,12 @@
       document.querySelectorAll('.filter-btn.of').forEach(el => el.classList.remove('active'));
       event.target.classList.add('active');
       updateDisplay();
+    }
+
+    function setTypeFilter(type) {
+      document.querySelectorAll('.filter-btn.type-filter').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+      // Filter would update table here - static for now
     }
 
     function updateDisplay() {
