@@ -821,6 +821,7 @@
     // State
     let currentYear = '2026';
     let currentOF = 'All';
+    let currentTypeFilter = 'All';
 
     // Data
     const yearlyData = {
@@ -924,9 +925,10 @@
     }
 
     function setTypeFilter(type) {
+      currentTypeFilter = type;
       document.querySelectorAll('.filter-btn.type-filter').forEach(el => el.classList.remove('active'));
       event.target.classList.add('active');
-      // Filter would update table here - static for now
+      updateDisplay();
     }
 
     function updateDisplay() {
@@ -1056,8 +1058,13 @@
       }
 
       // Update Top 10 header and table
-      document.getElementById('top10-header').textContent = 'Top 10 Promos - ' + yearLabel;
-      const campaigns = top10ByYear[currentYear] || top10ByYear['2026'];
+      const typeLabel = currentTypeFilter === 'All' ? '' : ' (' + (currentTypeFilter === 'Core' ? 'Core DashPass' : currentTypeFilter) + ')';
+      document.getElementById('top10-header').textContent = 'Top 10 Promos - ' + yearLabel + typeLabel;
+      const allCampaigns = top10ByYear[currentYear] || top10ByYear['2026'];
+      const campaigns = currentTypeFilter === 'All' ? allCampaigns : allCampaigns.filter(c => {
+        if (currentTypeFilter === 'Core') return c.type === 'Core DashPass';
+        return c.type === currentTypeFilter;
+      });
       const tbody = document.getElementById('top10-tbody');
       tbody.innerHTML = campaigns.map(c => {
         const typeColor = c.type === 'Core DashPass' ? '#4318AD' : c.type === 'NV' ? '#27ae60' : '#7f8c8d';
