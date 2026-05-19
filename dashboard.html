@@ -404,8 +404,8 @@
 
   <!-- EFFICIENCY TAB -->
   <div id="tab-efficiency" class="content hidden">
-    <div class="notice-purple notice" id="efficiency-notice" style="display: none;">
-      <p><strong>Filtered by OF</strong> — showing tranche breakdown for selected segment</p>
+    <div class="notice" id="efficiency-notice" style="display: none;">
+      <p></p>
     </div>
 
     <div class="grid-3" style="margin-bottom: 24px;">
@@ -564,8 +564,16 @@
       }
 
       const effNotice = document.getElementById('efficiency-notice');
-      if (currentOF !== 'All') {
+      if (currentYear !== '2026' || currentOF !== 'All') {
         effNotice.style.display = 'block';
+        let msg = '<strong>Note:</strong> ';
+        if (currentYear !== '2026') {
+          msg += 'Tranche efficiency by OF data is only available for 2026 YTD. Showing 2026 data.';
+        }
+        if (currentOF !== 'All') {
+          msg += (currentYear !== '2026' ? ' ' : '') + 'Filtered by ' + currentOF + ' users.';
+        }
+        effNotice.querySelector('p').innerHTML = msg;
       } else {
         effNotice.style.display = 'none';
       }
