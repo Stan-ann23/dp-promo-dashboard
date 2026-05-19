@@ -885,7 +885,64 @@
       ],
     };
 
-    // Campaign data by OF bucket (2026 YTD) - from Snowflake query with full tagging
+    // Full campaign data by year for Top Campaigns by Pod section
+    const allCampaignsByYear = {
+      '2026': [
+        { name: 'Chase DashPass NV Launch', spend: 26048200, spo: 9.83, pod: 'Partnerships', dpTag: 'NV' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 11250308, spo: 5.00, pod: 'Partnerships', dpTag: 'Broad-based' },
+        { name: 'SignupAI V1.5 - Monthly FT', spend: 10171345, spo: 11.32, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'SignupAI V1.5 - Monthly DTP', spend: 7057888, spo: 10.53, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'seamless-experience', spend: 6762146, spo: 2.99, pod: 'Other', dpTag: 'Broad-based' },
+        { name: 'Mid Tenure Recharge Scaled', spend: 6272404, spo: 9.95, pod: 'Retention', dpTag: 'Broad-based' },
+        { name: 'Delayed Welcome Bonus in Trial Scaled', spend: 5670809, spo: 23.20, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'DashPass Dynamic Support Recovery', spend: 4945761, spo: 6.42, pod: 'Retention', dpTag: 'Core DashPass' },
+        { name: 'Adaptive FMX v2', spend: 4783970, spo: 5.88, pod: 'Adoption', dpTag: 'Broad-based' },
+        { name: 'Delayed Welcome Bonus MF V3 Scaled', spend: 4746912, spo: 25.00, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'OHAR PM3+ Scaled', spend: 4491094, spo: 6.04, pod: 'Retention', dpTag: 'Broad-based' },
+        { name: 'Top Mx Contractual Marketing Commitments', spend: 2959364, spo: 7.48, pod: 'Partnerships', dpTag: 'Broad-based' },
+        { name: 'Gift Card Evergreen DashPass Benefit', spend: 2758492, spo: 15.62, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: '[Small G] Grocery Category Welcome Series', spend: 2758026, spo: 36.52, pod: 'Adoption', dpTag: 'NV' },
+        { name: 'Non Purchaser Welcome Series (JS)', spend: 2211229, spo: 8.84, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'OHAR Welcome Bonus PM 2 Scaled', spend: 1958129, spo: 5.83, pod: 'Adoption', dpTag: 'Core DashPass' },
+      ],
+      '2025': [
+        { name: 'Chase DashPass NV Launch', spend: 51920522, spo: 9.91, pod: 'Partnerships', dpTag: 'NV' },
+        { name: 'Member Pricing v2B', spend: 40795424, spo: 2.96, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'DashPass Tokenization', spend: 32006416, spo: 5.78, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Chase Reserve Restaurant Promo', spend: 24035298, spo: 5.00, pod: 'Partnerships', dpTag: 'Broad-based' },
+        { name: 'seamless-experience', spend: 22371629, spo: 2.99, pod: 'Other', dpTag: 'Broad-based' },
+        { name: 'SoDP Monthly', spend: 17243088, spo: 13.04, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'OHAR PM3+ Scaled', spend: 12598066, spo: 6.04, pod: 'Retention', dpTag: 'Broad-based' },
+        { name: 'Automated Disaster Recovery', spend: 12554310, spo: 9.36, pod: 'Retention', dpTag: 'Broad-based' },
+        { name: 'Top Mx Contractual Marketing Commitments', spend: 12012253, spo: 6.75, pod: 'Partnerships', dpTag: 'Broad-based' },
+        { name: 'SoDP Deal Drops', spend: 11956856, spo: 40.25, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Delayed Welcome Bonus MF V3 Scaled', spend: 11208971, spo: 25.00, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'Welcome Series Automation', spend: 10102643, spo: 4.81, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'Member Pricing Premier', spend: 7466988, spo: 5.24, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Delayed Welcome Bonus V2 Scaled', spend: 7374665, spo: 24.38, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'OHAR Welcome Bonus PM 2 Scaled', spend: 5485426, spo: 5.86, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: '[Small G] Grocery Category Welcome Series', spend: 4964384, spo: 38.14, pod: 'Adoption', dpTag: 'NV' },
+        { name: 'Non Purchaser Welcome Series (JS)', spend: 4875565, spo: 8.74, pod: 'Adoption', dpTag: 'Core DashPass' },
+      ],
+      '2024': [
+        { name: 'Welcome Series Automation', spend: 21063987, spo: 5.36, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'seamless-experience', spend: 18754797, spo: 2.99, pod: 'Other', dpTag: 'Broad-based' },
+        { name: 'SoDP - Monthly', spend: 13794509, spo: 12.87, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'DashPass Pricing', spend: 7929589, spo: 2.91, pod: 'Other', dpTag: 'Core DashPass' },
+        { name: 'Chase DashPass NV Launch', spend: 7092195, spo: 10.08, pod: 'Partnerships', dpTag: 'NV' },
+        { name: 'DashPass Daily Deals', spend: 6442375, spo: 13.41, pod: 'Other', dpTag: 'Core DashPass' },
+        { name: 'dashpass automated disaster recovery', spend: 5356745, spo: 9.84, pod: 'Retention', dpTag: 'Core DashPass' },
+        { name: 'Non Purchaser Welcome Series (JS)', spend: 3385722, spo: 8.81, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'DashPass Tokenization', spend: 3169407, spo: 6.14, pod: 'Benefits', dpTag: 'Core DashPass' },
+        { name: 'Automated Disaster Recovery', spend: 3019732, spo: 9.79, pod: 'Retention', dpTag: 'Broad-based' },
+        { name: '[Small G] Grocery Category Welcome Series', spend: 2817852, spo: 37.03, pod: 'Adoption', dpTag: 'NV' },
+        { name: 'OHAR Welcome Bonus PM 2', spend: 2165519, spo: 5.90, pod: 'Adoption', dpTag: 'Core DashPass' },
+        { name: 'Top Mx Contractual Marketing Commitments', spend: 2131265, spo: 7.42, pod: 'Partnerships', dpTag: 'Broad-based' },
+        { name: 'OHAR PM3+ Scaled', spend: 1943160, spo: 5.96, pod: 'Retention', dpTag: 'Broad-based' },
+      ],
+    };
+
+    // Campaign data by OF bucket (2026 YTD only) - from Snowflake query with full tagging
     const campaignsByOF = {
       'All': [
         { name: 'SignupAI V1.5 - Monthly FT', spend: 10171345, spo: 11.32, pod: 'Adoption', dpTag: 'Core DashPass' },
@@ -1116,13 +1173,21 @@
         campaignsNotice.style.display = 'none';
       }
 
-      // Update Top Campaigns by Pod tables based on OF filter (only 2026 data available)
-      const ofKey = (currentYear === '2026' && currentOF !== 'All') ? currentOF : 'All';
-      const podCampaignsData = campaignsByOF[ofKey] || campaignsByOF['All'];
+      // Update Top Campaigns by Pod tables
+      // Use OF-specific data only for 2026 when an OF bucket is selected
+      // Otherwise use year-specific data from allCampaignsByYear
+      let podCampaignsData;
+      if (currentOF !== 'All' && currentYear === '2026') {
+        // Use OF-specific campaign data (only available for 2026)
+        podCampaignsData = campaignsByOF[currentOF] || campaignsByOF['All'];
+      } else {
+        // Use year-specific campaign data
+        podCampaignsData = allCampaignsByYear[currentYear] || allCampaignsByYear['2026'];
+      }
       
       // Helper to get campaigns for a pod
       const getCampaignsForPod = (pod, limit) => {
-        return podCampaignsData.filter(c => c.pod === pod).slice(0, limit);
+        return podCampaignsData.filter(c => c.pod === pod).sort((a, b) => b.spend - a.spend).slice(0, limit);
       };
       
       // Helper to render campaign row with type badge
