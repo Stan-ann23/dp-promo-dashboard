@@ -345,6 +345,10 @@
 
   <!-- OF TAB -->
   <div id="tab-of" class="content hidden">
+    <div class="notice" id="of-notice" style="display: none;">
+      <p><strong>Note:</strong> Order Frequency data is currently only available for 2026 YTD.</p>
+    </div>
+
     <div class="key-finding">
       <h3>Key Finding: $85.7M to High-Frequency Users (2026 YTD) <span class="badge badge-purple">2026 YTD</span></h3>
       <p>High-frequency users (5+/mo) receive <strong>45%</strong> of promo spend. These users order habitually. The question: how much of this $85.7M is truly incremental?</p>
@@ -549,6 +553,14 @@
           (currentOF !== 'All' ? ' OF filter (' + currentOF + ') not applied to tenure data.' : '');
       } else {
         tenureNotice.style.display = 'none';
+      }
+
+      const ofNotice = document.getElementById('of-notice');
+      if (currentYear !== '2026') {
+        ofNotice.style.display = 'block';
+        ofNotice.querySelector('p').innerHTML = '<strong>Note:</strong> Order Frequency data is currently only available for 2026 YTD. Showing 2026 data instead of ' + currentYear + '.';
+      } else {
+        ofNotice.style.display = 'none';
       }
 
       const effNotice = document.getElementById('efficiency-notice');
