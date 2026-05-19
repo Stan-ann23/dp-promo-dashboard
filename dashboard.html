@@ -837,6 +837,14 @@
       'All': { adoption: 154993830, retention: 58012025, benefits: 160984508, partnerships: 142546028, unclassified: 603033755 }
     };
 
+    // Type spend by year - from canvas typeByYear
+    const typeByYear = {
+      '2024': { core: 108300000, nv: 17000000, other: 178906674 },
+      '2025': { core: 195400000, nv: 71800000, other: 358468724 },
+      '2026': { core: 49300000, nv: 34300000, other: 106094748 },
+      'All': { core: 353000000, nv: 123100000, other: 643470146 }
+    };
+
     // Pod spend by OF (2026 only) - from canvas podByOFByYear['2026']
     const podByOF = {
       '≤1/mo': { adoption: 11690655, retention: 847757, benefits: 928503, partnerships: 6795746, unclassified: 14076963 },
@@ -1151,6 +1159,18 @@
 
       // Update total spend
       document.getElementById('total-spend').textContent = formatCurrency(total);
+
+      // Update Type breakdown (only when OF is 'All' - Type data not available by OF)
+      if (currentOF === 'All') {
+        const types = typeByYear[currentYear] || typeByYear['2026'];
+        const typeTotal = types.core + types.nv + types.other;
+        const corePct = (types.core / typeTotal * 100).toFixed(0);
+        const nvPct = (types.nv / typeTotal * 100).toFixed(0);
+        const otherPct = (types.other / typeTotal * 100).toFixed(0);
+        document.getElementById('type-core').textContent = formatCurrency(types.core);
+        document.getElementById('type-nv').textContent = formatCurrency(types.nv);
+        document.getElementById('type-broad').textContent = formatCurrency(types.other);
+      }
 
       // Show OF filter notice
       const ofNoticeSection = document.getElementById('of-filter-notice');
